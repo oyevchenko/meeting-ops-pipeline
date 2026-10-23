@@ -62,3 +62,8 @@ Debug/adjust iterations against the real LLM (Gemini via its OpenAI-compatible e
 - **Fix:** owner_email() picks a Ukrainian or English template from the item title's script (Cyrillic vs Latin) and greets the resolved attendee's first name. Unresolved owners get only the 'Clarify owner' draft to Oleksii.
 - **Test:** test_ukrainian_item_gets_ukrainian_email_and_english_item_english, test_ambiguous_owner_gets_no_misaddressed_owner_email
 
+## 13. Count tokens of re-asks; per-step and total cost
+- **Observed:** Reading the trace after iteration 9 added re-asks: when validation triggered a corrective call, TRACE kept only the second response's usage, so the first call's tokens were lost and the cost of re-asks was invisible. There was also no cost figure at all.
+- **Fix:** TRACE rows now hold llm_calls and summed prompt/completion tokens across re-asks, plus cost_usd (LLM_PRICE_IN/OUT per 1M tokens, configurable); totals() aggregates and run.py prints them.
+- **Test:** test_reask_tokens_are_counted_and_costed
+

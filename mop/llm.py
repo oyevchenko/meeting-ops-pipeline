@@ -4,7 +4,13 @@ import json, os, re, time
 from datetime import date
 from .dates import resolve
 
-TRACE: list[dict] = []  # one row per pipeline step: which backend actually answered, tokens, latency
+TRACE: list[dict] = []
+PRICE = {"in": float(os.getenv("LLM_PRICE_IN", "0.30")), "out": float(os.getenv("LLM_PRICE_OUT", "2.50"))}  # USD per 1M tokens, configurable
+
+def totals():
+    k = lambda f: sum(t.get(f, 0) for t in TRACE)
+    return {"steps": len(TRACE), "llm_calls": k("llm_calls"), "prompt_tokens": k("prompt_tokens"), "completion_tokens": k("completion_tokens"),
+            "cost_usd": round(k("cost_usd"), 6), "latency_ms": k("latency_ms")}  # one row per pipeline step: which backend actually answered, tokens, latency
 
 def _client():
     if os.getenv("LLM_MODE") == "mock": return None
@@ -34,15 +40,17 @@ def _ask(step, prompt, fallback, validate=None):
         errors = []
         for model in models:
             try:
-                r = _create(cli, model, prompt)
+                r = _create(cli, model, prompt); calls = [r]
                 out = json.loads(r.choices[0].message.content)
                 if validate and (problems := validate(out)):  # one corrective re-ask on the same model
                     r = _create(cli, model, prompt + f"\n\nYour previous answer had problems: {problems}. Fix them and return JSON only.")
-                    out = json.loads(r.choices[0].message.content)
+                    calls.append(r); out = json.loads(r.choices[0].message.content)
                     if validate(out):
                         raise ValueError(f"invalid output after re-ask: {validate(out)}")
-                u = r.usage
-                TRACE.append({"step": step, "backend": model, "prompt_tokens": u.prompt_tokens, "completion_tokens": u.completion_tokens,
+                pt = sum(getattr(x.usage, "prompt_tokens", 0) or 0 for x in calls)  # count re-asks too
+                ct = sum(getattr(x.usage, "completion_tokens", 0) or 0 for x in calls)
+                TRACE.append({"step": step, "backend": model, "llm_calls": len(calls), "prompt_tokens": pt, "completion_tokens": ct,
+                              "cost_usd": round(pt / 1e6 * PRICE["in"] + ct / 1e6 * PRICE["out"], 6),
                               "latency_ms": round((time.time() - t0) * 1000), "errors": errors})
                 return out
             except Exception as e:

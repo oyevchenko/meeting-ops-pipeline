@@ -1,20 +1,24 @@
 [
   {
-    "step": "summarize",
+    "step": "extract_action_items",
     "backend": "gemini-flash-lite-latest",
-    "prompt_tokens": 206,
-    "completion_tokens": 73,
-    "latency_ms": 908,
+    "llm_calls": 1,
+    "prompt_tokens": 470,
+    "completion_tokens": 309,
+    "cost_usd": 0.000913,
+    "latency_ms": 1490,
     "errors": [
       "gemini-3-flash-preview: RateLimitError"
     ]
   },
   {
-    "step": "extract_action_items",
+    "step": "summarize",
     "backend": "gemini-flash-lite-latest",
-    "prompt_tokens": 213,
-    "completion_tokens": 233,
-    "latency_ms": 1138,
+    "llm_calls": 1,
+    "prompt_tokens": 408,
+    "completion_tokens": 111,
+    "cost_usd": 0.0004,
+    "latency_ms": 960,
     "errors": [
       "gemini-3-flash-preview: RateLimitError"
     ]
@@ -22,9 +26,11 @@
   {
     "step": "closing_report",
     "backend": "gemini-flash-lite-latest",
+    "llm_calls": 1,
     "prompt_tokens": 412,
     "completion_tokens": 308,
-    "latency_ms": 1819,
+    "cost_usd": 0.000894,
+    "latency_ms": 1206,
     "errors": [
       "gemini-3-flash-preview: RateLimitError"
     ]

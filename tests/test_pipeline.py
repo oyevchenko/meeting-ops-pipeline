@@ -196,3 +196,16 @@ def test_ambiguous_owner_gets_no_misaddressed_owner_email(monkeypatch):
     p = Pipeline(T); p.run(MESSY)
     subjects = [c["body"]["message"]["subject"] for c in p.gmail.calls]
     assert subjects == ["Clarify owner: зробити мапінг полів"]
+
+def test_reask_tokens_are_counted_and_costed(monkeypatch):
+    from types import SimpleNamespace as N
+    outs = ['{"tldr": "a. b. c. d.", "decisions": []}', '{"tldr": "ok.", "decisions": []}']
+    class Cli:
+        chat = property(lambda s: s); completions = property(lambda s: s)
+        def create(self, model, **kw):
+            return N(choices=[N(message=N(content=outs.pop(0)))], usage=N(prompt_tokens=100, completion_tokens=10))
+    monkeypatch.setattr(llm, "_client", lambda: (Cli(), ["m"]))
+    llm.TRACE.clear(); llm.summarize(M)
+    t = llm.TRACE[-1]
+    assert t["llm_calls"] == 2 and t["prompt_tokens"] == 200 and t["completion_tokens"] == 20 and t["cost_usd"] > 0
+    assert llm.totals()["llm_calls"] == 2

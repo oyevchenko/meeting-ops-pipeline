@@ -20,3 +20,5 @@ out = pathlib.Path("out"); out.mkdir(exist_ok=True)
 (out / "api_calls_dry_run.json").write_text(json.dumps({k: getattr(p, k).calls for k in ["confluence", "jira", "calendar", "gmail", "notify"]}, indent=2, ensure_ascii=False))
 (out / "llm_trace.json").write_text(json.dumps(TRACE, indent=2))
 print("\n🔎 LLM trace: " + "; ".join(f"{t['step']}→{t['backend']}" + (f" (skipped {t['errors']})" if t['errors'] else "") for t in TRACE))
+from mop.llm import totals
+t = totals(); print(f"💰 {t['llm_calls']} LLM calls · {t['prompt_tokens']}+{t['completion_tokens']} tokens · ${t['cost_usd']} · {t['latency_ms']} ms")

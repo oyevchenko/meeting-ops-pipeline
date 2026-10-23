@@ -1,19 +1,26 @@
 {
   "dry_run": true,
   "summary": {
-    "tldr": "Reviewed the voice-agent rollout: CRM webhooks are ready in staging, but telephony routing has latency issues.",
+    "tldr": "The team reviewed the voice-agent rollout and decided to push the go-live to November 4, pending latency improvements. However, telephony routing currently suffers from latency issues that are being addressed.",
     "decisions": [
       "Go-live moves to Nov 4 if latency < 800ms.",
       "Client approves Telegram as the second channel."
+    ],
+    "risks": [
+      "Telephony routing still has latency issues."
     ]
   },
+  "suspicious_lines": [],
   "confluence_page": "1",
   "items": [
     {
       "owner": "Dmytro Shevchuk",
       "title": "fix telephony latency and share benchmark",
       "due": "2026-10-24",
+      "due_raw": "2026-10-24",
       "done": false,
+      "due_source": "rule",
+      "hold": [],
       "email": "dmytro@team.example",
       "jira": "OPS-201",
       "calendar_event": "1",
@@ -40,13 +47,17 @@
           "text": "Due today: 'fix telephony latency and share benchmark'. Reply 'done' or share blockers.",
           "scheduled": "2"
         }
-      ]
+      ],
+      "needs": []
     },
     {
       "owner": "Olena Bondar",
       "title": "write regression test cases for CRM webhooks",
       "due": "2026-10-23",
+      "due_raw": "2026-10-23",
       "done": false,
+      "due_source": "rule",
+      "hold": [],
       "email": "olena@team.example",
       "jira": "OPS-202",
       "calendar_event": "2",
@@ -63,13 +74,17 @@
           "text": "Due today: 'write regression test cases for CRM webhooks'. Reply 'done' or share blockers.",
           "scheduled": "3"
         }
-      ]
+      ],
+      "needs": []
     },
     {
       "owner": "Anna Koval",
       "title": "confirm Telegram bot naming and greeting text",
       "due": "2026-10-22",
+      "due_raw": "2026-10-22",
       "done": false,
+      "due_source": "rule",
+      "hold": [],
       "email": "anna@client.example",
       "jira": "OPS-203",
       "calendar_event": "3",
@@ -86,13 +101,17 @@
           "text": "⚠️ OVERDUE since 2026-10-22: 'confirm Telegram bot naming and greeting text' (Anna Koval). Please give a new ETA today.",
           "scheduled": "4"
         }
-      ]
+      ],
+      "needs": []
     },
     {
       "owner": "Oleksii Yevchenko",
       "title": "schedule go/no-go call with client stakeholders",
       "due": "2026-10-28",
+      "due_raw": "2026-10-28",
       "done": false,
+      "due_source": "rule",
+      "hold": [],
       "email": "oleksii.yevchenko@gmail.com",
       "jira": "OPS-204",
       "calendar_event": "4",
@@ -118,7 +137,8 @@
           "text": "Due today: 'schedule go/no-go call with client stakeholders'. Reply 'done' or share blockers.",
           "scheduled": "6"
         }
-      ]
+      ],
+      "needs": []
     }
   ]
 }
