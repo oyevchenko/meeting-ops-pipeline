@@ -219,3 +219,9 @@ def test_uncommitted_suggestions_dropped_and_ungrounded_items_flagged(monkeypatc
     items = llm.extract_action_items(m)
     assert [i["title"] for i in items] == ["regression report", "pay invoice"]
     assert "ungrounded" not in items[0] and items[1]["ungrounded"] is True
+
+def test_agreed_task_without_owner_is_kept_for_clarification(monkeypatch):
+    monkeypatch.setattr(llm, "_ask", lambda *a, **k: {"items": [
+        {"owner": None, "title": "оновити Confluence зі схемою", "due": None, "due_raw": None, "committed": True, "evidence": "Хтось має оновити Confluence"}]})
+    items = llm.extract_action_items({"date": "2026-10-23", "notes_markdown": "- Хтось має оновити Confluence зі схемою (не домовились хто)"})
+    assert len(items) == 1 and items[0]["owner"] is None and "ungrounded" not in items[0]

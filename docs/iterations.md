@@ -72,3 +72,8 @@ Debug/adjust iterations against the real LLM (Gemini via its OpenAI-compatible e
 - **Fix:** The prompt asks for committed + a verbatim evidence quote; committed=false items are dropped; if the evidence quote isn't in the notes the item is flagged ungrounded and held for review. 3/3 live reruns: 4 real items, no monitoring item. Also added gemini-3.5-flash-lite to the fallback chain after gemini-3-flash-preview and gemini-3.5-flash returned 429 for the whole session.
 - **Test:** test_uncommitted_suggestions_dropped_and_ungrounded_items_flagged; live eval passes
 
+## 15. Keep agreed-but-unowned tasks (regression from iteration 14)
+- **Observed:** After iteration 14 the live eval test_live_relative_dates_resolved_from_meeting_date failed with StopIteration. The 'Хтось має оновити Confluence ... (не домовились хто)' item was now marked committed=false and dropped, so the clarification flow from iteration 5 never fired. (The same full live run also hit per-minute 429s on every model and fell back to the mock; live evals are now run one at a time with pauses.) Correction to iteration 14's note: its live eval passed only on the rerun.
+- **Fix:** Prompt clarifies that committed=true covers tasks the group agreed are needed even with no owner (owner=null), and committed=false is only for optional ideas nobody took. Live reruns: Confluence item kept with owner null, monitoring suggestion still dropped. All 4 live evals pass when run sequentially.
+- **Test:** test_agreed_task_without_owner_is_kept_for_clarification; live: test_live_relative_dates_resolved_from_meeting_date, test_live_long_transcript_summary_has_no_todos_as_decisions
+

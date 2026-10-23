@@ -115,8 +115,9 @@ def extract_action_items(meeting):
         return {"items": [{"owner": o.strip(), "title": t, "due": dd, "due_raw": dd, "done": x == "x", "committed": True} for x, o, t, dd in AI_RE.findall(meeting["notes_markdown"])]}
     prompt = GUARD + (f"Meeting date: {d.isoformat()} ({d.strftime('%A')}). Extract every action item from the notes (any language; keep titles in the "
               "original language). Merge duplicates that describe the same task for the same person. Return JSON "
-              "{items:[{owner, title, due, due_raw, done, committed, evidence}]}. Include only real commitments: someone was assigned or "
-              "accepted the task. Suggestions nobody took ('maybe someone could...', 'not urgent, nobody committed') get committed=false. "
+              "{items:[{owner, title, due, due_raw, done, committed, evidence}]}. committed=true when the task was assigned/accepted OR the group "
+              "agreed it must be done even if no owner was chosen (then owner=null, e.g. 'someone has to update X, we didn't agree who'). "
+              "committed=false only for optional ideas nobody took ('maybe someone could... someday', 'not urgent, nobody committed'). "
               "evidence = a short verbatim quote (max 12 words) from the notes that shows the task. owner = the name exactly as written, or null if nobody was assigned. "
               "due_raw = the deadline text exactly as written (or null). due = that deadline resolved to YYYY-MM-DD relative to the meeting date: "
               "'next <weekday>' / 'до наступної <день>' = that weekday in the following calendar week; 'end of (next) week' = Friday of that week; "
