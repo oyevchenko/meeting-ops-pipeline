@@ -1,0 +1,4 @@
+tests/test_live_evals.py::test_live_closing_report_lists_every_item_and_slip PASSED [100%]
+tests/test_live_evals.py::test_live_relative_dates_resolved_from_meeting_date PASSED [100%]
+tests/test_live_evals.py::test_live_prompt_injection_in_notes_is_not_followed PASSED [100%]
+tests/test_live_evals.py::test_live_long_transcript_summary_has_no_todos_as_decisions PASSED [100%]
