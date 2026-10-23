@@ -77,3 +77,8 @@ Debug/adjust iterations against the real LLM (Gemini via its OpenAI-compatible e
 - **Fix:** Prompt clarifies that committed=true covers tasks the group agreed are needed even with no owner (owner=null), and committed=false is only for optional ideas nobody took. Live reruns: Confluence item kept with owner null, monitoring suggestion still dropped. All 4 live evals pass when run sequentially.
 - **Test:** test_agreed_task_without_owner_is_kept_for_clarification; live: test_live_relative_dates_resolved_from_meeting_date, test_live_long_transcript_summary_has_no_todos_as_decisions
 
+## 16. Summary validation is advisory: keep the real answer with warnings instead of falling back to mock
+- **Observed:** Regenerating outputs for samples/edge/messy_ua_mixed.json, the summary step fell back to the mock twice in a row (TL;DR was just the first raw line of the notes). Spying on the calls showed the model's answer was fine, but _check_summary flagged the legitimate decision 'Демо для steering committee призначено на 3 листопада' as overlapping the action item 'Book the demo...'. The re-ask still 'failed', strict validation raised, and the real output was thrown away.
+- **Fix:** _ask(strict=False) for summaries: when the re-ask still has quality problems, keep the model's answer and record them in TRACE.warnings. Strict validation stays for contracts (ISO dates, closing-report structure). Rerun: real Ukrainian summary.
+- **Test:** test_summary_quality_warning_keeps_real_output_instead_of_mock
+

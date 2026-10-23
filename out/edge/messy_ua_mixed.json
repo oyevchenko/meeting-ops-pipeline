@@ -1,0 +1,232 @@
+{
+  "dry_run": true,
+  "summary": {
+    "tldr": "Команда обговорила синхронізацію замовлень з 1C кожні 5 хвилин та погодила проведення демонстрації для steering committee. Основним блокером залишається відсутність API-креденціалів для середовища staging.",
+    "decisions": [
+      "Провести демо для steering committee 3 листопада"
+    ],
+    "risks": [
+      "Відсутність API-креденціалів для staging",
+      "Не визначено відповідального за оновлення Confluence зі схемою інтеграції"
+    ]
+  },
+  "suspicious_lines": [],
+  "confluence_page": "1",
+  "items": [
+    {
+      "owner": "Діма",
+      "title": "Зробити мапінг полів",
+      "due": "2026-10-30",
+      "due_raw": "до наступної п'ятниці",
+      "done": false,
+      "committed": true,
+      "evidence": "зробить мапінг полів до наступної п'ятниці",
+      "due_source": "rule",
+      "hold": [],
+      "email": "oleksii.yevchenko@gmail.com",
+      "jira": "OPS-201",
+      "calendar_event": "1",
+      "draft": null,
+      "reminders": [
+        {
+          "kind": "T-1",
+          "at": "2026-10-29",
+          "to": [
+            "oleksii.yevchenko@gmail.com"
+          ],
+          "channel": "slack",
+          "text": "Reminder: 'Зробити мапінг полів' is due tomorrow (2026-10-30).",
+          "scheduled": "1"
+        },
+        {
+          "kind": "due-today",
+          "at": "2026-10-30",
+          "to": [
+            "oleksii.yevchenko@gmail.com"
+          ],
+          "channel": "slack",
+          "text": "Due today: 'Зробити мапінг полів'. Reply 'done' or share blockers.",
+          "scheduled": "2"
+        }
+      ],
+      "needs": [
+        "owner (ambiguous: Dmytro Shevchuk / Dmytro Hnatiuk)"
+      ]
+    },
+    {
+      "owner": "Olena Bondar",
+      "title": "Regression suite for order sync",
+      "due": "2026-10-30",
+      "due_raw": "by end of next week",
+      "done": false,
+      "committed": true,
+      "evidence": "regression suite for order sync — by end of next week",
+      "due_source": "rule",
+      "hold": [],
+      "email": "olena@team.example",
+      "jira": "OPS-202",
+      "calendar_event": "2",
+      "draft": "2",
+      "reminders": [
+        {
+          "kind": "T-1",
+          "at": "2026-10-29",
+          "to": [
+            "olena@team.example"
+          ],
+          "channel": "slack",
+          "text": "Reminder: 'Regression suite for order sync' is due tomorrow (2026-10-30).",
+          "scheduled": "3"
+        },
+        {
+          "kind": "due-today",
+          "at": "2026-10-30",
+          "to": [
+            "olena@team.example",
+            "oleksii.yevchenko@gmail.com"
+          ],
+          "channel": "slack",
+          "text": "Due today: 'Regression suite for order sync'. Reply 'done' or share blockers.",
+          "scheduled": "4"
+        }
+      ],
+      "needs": []
+    },
+    {
+      "owner": "Mark Fischer",
+      "title": "Send API credentials for staging",
+      "due": "2026-10-26",
+      "due_raw": "ASAP",
+      "done": false,
+      "committed": true,
+      "evidence": "Mark to send API credentials for staging ASAP",
+      "due_source": "rule",
+      "hold": [],
+      "email": "mark@client.example",
+      "jira": "OPS-203",
+      "calendar_event": "3",
+      "draft": "3",
+      "reminders": [
+        {
+          "kind": "T-1",
+          "at": "2026-10-23",
+          "to": [
+            "mark@client.example"
+          ],
+          "channel": "slack",
+          "text": "Reminder: 'Send API credentials for staging' is due on Monday (2026-10-26).",
+          "scheduled": "5"
+        },
+        {
+          "kind": "due-today",
+          "at": "2026-10-26",
+          "to": [
+            "mark@client.example",
+            "oleksii.yevchenko@gmail.com"
+          ],
+          "channel": "slack",
+          "text": "Due today: 'Send API credentials for staging'. Reply 'done' or share blockers.",
+          "scheduled": "6"
+        }
+      ],
+      "needs": []
+    },
+    {
+      "owner": null,
+      "title": "Оновити Confluence зі схемою інтеграції",
+      "due": null,
+      "due_raw": null,
+      "done": false,
+      "committed": true,
+      "evidence": "Хтось має оновити Confluence зі схемою інтеграції",
+      "due_source": null,
+      "hold": [],
+      "email": "oleksii.yevchenko@gmail.com",
+      "jira": null,
+      "calendar_event": null,
+      "draft": "4",
+      "reminders": [],
+      "needs": [
+        "owner (unassigned)",
+        "due_date"
+      ]
+    },
+    {
+      "owner": "Oleksii Yevchenko",
+      "title": "Book the demo for the steering committee",
+      "due": "2026-11-03",
+      "due_raw": "3 листопада",
+      "done": false,
+      "committed": true,
+      "evidence": "Oleksii owns it, 3 листопада",
+      "due_source": "rule",
+      "hold": [],
+      "email": "oleksii.yevchenko@gmail.com",
+      "jira": "OPS-204",
+      "calendar_event": "4",
+      "draft": "5",
+      "reminders": [
+        {
+          "kind": "T-1",
+          "at": "2026-11-02",
+          "to": [
+            "oleksii.yevchenko@gmail.com"
+          ],
+          "channel": "slack",
+          "text": "Reminder: 'Book the demo for the steering committee' is due tomorrow (2026-11-03).",
+          "scheduled": "7"
+        },
+        {
+          "kind": "due-today",
+          "at": "2026-11-03",
+          "to": [
+            "oleksii.yevchenko@gmail.com"
+          ],
+          "channel": "slack",
+          "text": "Due today: 'Book the demo for the steering committee'. Reply 'done' or share blockers.",
+          "scheduled": "8"
+        }
+      ],
+      "needs": []
+    },
+    {
+      "owner": "Olena Bondar",
+      "title": "Напише тест-кейси для edge cases",
+      "due": "2026-10-26",
+      "due_raw": "до понеділка",
+      "done": false,
+      "committed": true,
+      "evidence": "напише тест-кейси для edge cases, до понеділка",
+      "due_source": "rule",
+      "hold": [],
+      "email": "olena@team.example",
+      "jira": "OPS-205",
+      "calendar_event": "5",
+      "draft": "6",
+      "reminders": [
+        {
+          "kind": "T-1",
+          "at": "2026-10-23",
+          "to": [
+            "olena@team.example"
+          ],
+          "channel": "slack",
+          "text": "Reminder: 'Напише тест-кейси для edge cases' is due on Monday (2026-10-26).",
+          "scheduled": "9"
+        },
+        {
+          "kind": "due-today",
+          "at": "2026-10-26",
+          "to": [
+            "olena@team.example",
+            "oleksii.yevchenko@gmail.com"
+          ],
+          "channel": "slack",
+          "text": "Due today: 'Напише тест-кейси для edge cases'. Reply 'done' or share blockers.",
+          "scheduled": "10"
+        }
+      ],
+      "needs": []
+    }
+  ]
+}

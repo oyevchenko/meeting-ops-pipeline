@@ -3,10 +3,10 @@
     "step": "extract_action_items",
     "backend": "gemini-flash-lite-latest",
     "llm_calls": 1,
-    "prompt_tokens": 470,
-    "completion_tokens": 309,
-    "cost_usd": 0.000913,
-    "latency_ms": 1223,
+    "prompt_tokens": 566,
+    "completion_tokens": 400,
+    "cost_usd": 0.00117,
+    "latency_ms": 20484,
     "errors": [
       "gemini-3-flash-preview: RateLimitError"
     ]
@@ -18,7 +18,7 @@
     "prompt_tokens": 408,
     "completion_tokens": 112,
     "cost_usd": 0.000402,
-    "latency_ms": 938,
+    "latency_ms": 965,
     "errors": [
       "gemini-3-flash-preview: RateLimitError"
     ]
@@ -28,9 +28,9 @@
     "backend": "gemini-flash-lite-latest",
     "llm_calls": 1,
     "prompt_tokens": 412,
-    "completion_tokens": 268,
-    "cost_usd": 0.000794,
-    "latency_ms": 1396,
+    "completion_tokens": 309,
+    "cost_usd": 0.000896,
+    "latency_ms": 1407,
     "errors": [
       "gemini-3-flash-preview: RateLimitError"
     ]

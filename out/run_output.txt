@@ -1,22 +1,22 @@
 🧾 Weekly Delivery Sync — Voice Agent Rollout  (dry-run=True, LLM=gemini-flash-lite-latest)
-   TL;DR: The team reviewed the voice-agent rollout and approved Telegram as the second channel, while moving the go-live date to Nov 4 pending latency improvements. Telephony routing latency remains a current blocker.
+   TL;DR: The team reviewed the voice-agent rollout and decided to move the go-live date to November 4, pending latency improvements. However, telephony routing currently suffers from latency issues that are being addressed.
    Confluence page id=1 → POST /wiki/rest/api/content
 
  • fix telephony latency and share benchmark
-   owner=Dmytro Shevchuk due=2026-10-24 jira=OPS-201 cal_event=1 gmail_draft=1
+   owner=Dmytro Shevchuk due=2026-10-24 (raw: 2026-10-24) jira=OPS-201 cal_event=1 gmail_draft=1
    ⏰ T-1        2026-10-23 via slack → dmytro@team.example
    ⏰ due-today  2026-10-24 via slack → dmytro@team.example, oleksii.yevchenko@gmail.com
 
  • write regression test cases for CRM webhooks
-   owner=Olena Bondar due=2026-10-23 jira=OPS-202 cal_event=2 gmail_draft=2
+   owner=Olena Bondar due=2026-10-23 (raw: 2026-10-23) jira=OPS-202 cal_event=2 gmail_draft=2
    ⏰ due-today  2026-10-23 via slack → olena@team.example, oleksii.yevchenko@gmail.com
 
  • confirm Telegram bot naming and greeting text
-   owner=Anna Koval due=2026-10-22 jira=OPS-203 cal_event=3 gmail_draft=3
+   owner=Anna Koval due=2026-10-22 (raw: 2026-10-22) jira=OPS-203 cal_event=3 gmail_draft=3
    ⏰ escalation 2026-10-23 via slack → oleksii.yevchenko@gmail.com, anna@client.example
 
  • schedule go/no-go call with client stakeholders
-   owner=Oleksii Yevchenko due=2026-10-28 jira=OPS-204 cal_event=4 gmail_draft=4
+   owner=Oleksii Yevchenko due=2026-10-28 (raw: 2026-10-28) jira=OPS-204 cal_event=4 gmail_draft=4
    ⏰ T-1        2026-10-27 via slack → oleksii.yevchenko@gmail.com
    ⏰ due-today  2026-10-28 via slack → oleksii.yevchenko@gmail.com
 
@@ -24,17 +24,17 @@
    Subject: [Closed] Weekly Delivery Sync — Voice Agent Rollout
    Hi all,
    
-   All action items from our meeting on 2026-10-21 are now completed as of 2026-10-27.
+   All action items from the Weekly Delivery Sync — Voice Agent Rollout held on 2026-10-21 are now completed as of 2026-10-27.
    
    - fix telephony latency and share benchmark — Dmytro Shevchuk, due 2026-10-24, done 2026-10-24
    - write regression test cases for CRM webhooks — Olena Bondar, due 2026-10-23, done 2026-10-23
    - confirm Telegram bot naming and greeting text — Anna Koval, due 2026-10-22, done 2026-10-25 (slipped 3 days)
    - schedule go/no-go call with client stakeholders — Oleksii Yevchenko, due 2026-10-28, done 2026-10-27
    
-   Slips: Anna Koval slipped 3 days.
+   Slips: Anna Koval's item slipped by 3 days; Dmytro Shevchuk, Olena Bondar, and Oleksii Yevchenko completed their items on time or ahead of schedule.
    
    Thanks everyone,
    Oleksii
 
 🔎 LLM trace: extract_action_items→gemini-flash-lite-latest (skipped ['gemini-3-flash-preview: RateLimitError']); summarize→gemini-flash-lite-latest (skipped ['gemini-3-flash-preview: RateLimitError']); closing_report→gemini-flash-lite-latest (skipped ['gemini-3-flash-preview: RateLimitError'])
-💰 3 LLM calls · 1290+689 tokens · $0.002109 · 3557 ms
+💰 3 LLM calls · 1386+821 tokens · $0.002468 · 22856 ms

@@ -33,25 +33,27 @@ def _create(cli, model, prompt, attempts=3, sleep=time.sleep):
             if i == attempts - 1 or "quota" in str(e).lower(): raise
             sleep(2 ** i)
 
-def _ask(step, prompt, fallback, validate=None):
+def _ask(step, prompt, fallback, validate=None, strict=True):
     c, t0 = _client(), time.time()
     if c:
         cli, models = c
         errors = []
         for model in models:
             try:
-                r = _create(cli, model, prompt); calls = [r]
+                r = _create(cli, model, prompt); calls = [r]; warnings = []
                 out = json.loads(r.choices[0].message.content)
                 if validate and (problems := validate(out)):  # one corrective re-ask on the same model
                     r = _create(cli, model, prompt + f"\n\nYour previous answer had problems: {problems}. Fix them and return JSON only.")
                     calls.append(r); out = json.loads(r.choices[0].message.content)
-                    if validate(out):
-                        raise ValueError(f"invalid output after re-ask: {validate(out)}")
+                    if (left := validate(out)):
+                        if strict:
+                            raise ValueError(f"invalid output after re-ask: {left}")
+                        warnings = left  # quality nit, not a contract break: keep the real answer, record the warning
                 pt = sum(getattr(x.usage, "prompt_tokens", 0) or 0 for x in calls)  # count re-asks too
                 ct = sum(getattr(x.usage, "completion_tokens", 0) or 0 for x in calls)
                 TRACE.append({"step": step, "backend": model, "llm_calls": len(calls), "prompt_tokens": pt, "completion_tokens": ct,
                               "cost_usd": round(pt / 1e6 * PRICE["in"] + ct / 1e6 * PRICE["out"], 6),
-                              "latency_ms": round((time.time() - t0) * 1000), "errors": errors})
+                              "latency_ms": round((time.time() - t0) * 1000), "errors": errors, "warnings": warnings})
                 return out
             except Exception as e:
                 errors.append(f"{model}: {type(e).__name__}")
@@ -87,7 +89,7 @@ def summarize(meeting, items=None):
         "(scope, dates, approvals) — NOT individual to-dos/action items ('X will do Y'), which are extracted separately; [] if none. "
         "risks: open problems or blockers mentioned. Write in the language most of the notes use.\n"
         + (f"Action items already extracted (do NOT list them as decisions): {json.dumps([i['title'] for i in items], ensure_ascii=False)}\n" if items else "")
-        + wrap(md)), mock, validate=lambda o: _check_summary(o, items))
+        + wrap(md)), mock, validate=lambda o: _check_summary(o, items), strict=False)
 
 def _tokens(t):
     return {w[:5] for w in re.findall(r"\w{4,}", t.lower())}  # crude stem: first 5 letters works for UA/EN inflections

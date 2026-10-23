@@ -1,0 +1,35 @@
+🧾 Синк з клієнтом — інтеграція з ERP  (dry-run=True, LLM=gemini-flash-lite-latest)
+   TL;DR: Команда обговорила синхронізацію замовлень з 1C кожні 5 хвилин та погодила проведення демонстрації для steering committee. Основним блокером залишається відсутність API-креденціалів для середовища staging.
+   Confluence page id=1 → POST /wiki/rest/api/content
+
+ • Зробити мапінг полів
+   owner=Діма due=2026-10-30 (raw: до наступної п'ятниці) jira=OPS-201 cal_event=1 gmail_draft=None
+   ⚠️  needs: owner (ambiguous: Dmytro Shevchuk / Dmytro Hnatiuk)
+   ⏰ T-1        2026-10-29 via slack → oleksii.yevchenko@gmail.com
+   ⏰ due-today  2026-10-30 via slack → oleksii.yevchenko@gmail.com
+
+ • Regression suite for order sync
+   owner=Olena Bondar due=2026-10-30 (raw: by end of next week) jira=OPS-202 cal_event=2 gmail_draft=2
+   ⏰ T-1        2026-10-29 via slack → olena@team.example
+   ⏰ due-today  2026-10-30 via slack → olena@team.example, oleksii.yevchenko@gmail.com
+
+ • Send API credentials for staging
+   owner=Mark Fischer due=2026-10-26 (raw: ASAP) jira=OPS-203 cal_event=3 gmail_draft=3
+   ⏰ T-1        2026-10-23 via slack → mark@client.example
+   ⏰ due-today  2026-10-26 via slack → mark@client.example, oleksii.yevchenko@gmail.com
+
+ • Оновити Confluence зі схемою інтеграції
+   owner=None due=None (raw: None) jira=None cal_event=None gmail_draft=4
+   ⚠️  needs: owner (unassigned), due_date
+
+ • Book the demo for the steering committee
+   owner=Oleksii Yevchenko due=2026-11-03 (raw: 3 листопада) jira=OPS-204 cal_event=4 gmail_draft=5
+   ⏰ T-1        2026-11-02 via slack → oleksii.yevchenko@gmail.com
+   ⏰ due-today  2026-11-03 via slack → oleksii.yevchenko@gmail.com
+
+ • Напише тест-кейси для edge cases
+   owner=Olena Bondar due=2026-10-26 (raw: до понеділка) jira=OPS-205 cal_event=5 gmail_draft=6
+   ⏰ T-1        2026-10-23 via slack → olena@team.example
+   ⏰ due-today  2026-10-26 via slack → olena@team.example, oleksii.yevchenko@gmail.com
+
+💰 {'steps': 2, 'llm_calls': 3, 'prompt_tokens': 1385, 'completion_tokens': 782, 'cost_usd': 0.00237, 'latency_ms': 13572}
