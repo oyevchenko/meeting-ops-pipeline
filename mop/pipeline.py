@@ -77,7 +77,8 @@ class Pipeline:
         for i in items:  # anything touching an outside address or living in an instruction-like line is held for a human
             ext = [d for d in re.findall(r"[\w.+-]+@([\w.-]+)", i["title"]) if d not in allowed]
             in_sus = any(i["title"][:25].lower() in l.lower() for l in sus)
-            i["hold"] = (["external address: " + ", ".join(ext)] if ext else []) + (["from instruction-like text"] if in_sus else [])
+            i["hold"] = (["external address: " + ", ".join(ext)] if ext else []) + (["from instruction-like text"] if in_sus else []) \
+                + (["evidence quote not found in notes"] if i.get("ungrounded") else [])
         e = html.escape  # Confluence storage format is XHTML: titles/notes like '<4h', 'A & B' or '<script>' must be escaped
         body = f"<h1>{e(meeting['title'])}</h1><p>{e(s['tldr'])}</p><h2>Decisions</h2><ul>" + "".join(f"<li>{e(d)}</li>" for d in s["decisions"]) + \
                "</ul><h2>Action items</h2><ul>" + "".join(f"<li>{e(i['owner'] or 'unassigned')}: {e(i['title'])} (due {e(i['due'] or 'TBD')})</li>" for i in items) + "</ul>"

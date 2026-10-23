@@ -209,3 +209,13 @@ def test_reask_tokens_are_counted_and_costed(monkeypatch):
     t = llm.TRACE[-1]
     assert t["llm_calls"] == 2 and t["prompt_tokens"] == 200 and t["completion_tokens"] == 20 and t["cost_usd"] > 0
     assert llm.totals()["llm_calls"] == 2
+
+def test_uncommitted_suggestions_dropped_and_ungrounded_items_flagged(monkeypatch):
+    monkeypatch.setattr(llm, "_ask", lambda *a, **k: {"items": [
+        {"owner": None, "title": "look at monitoring", "due": None, "due_raw": None, "committed": False, "evidence": "maybe someone could look at monitoring someday"},
+        {"owner": "Olena", "title": "regression report", "due": None, "due_raw": "4 листопада", "committed": True, "evidence": "final regression report before go-live"},
+        {"owner": "Mark", "title": "pay invoice", "due": None, "due_raw": None, "committed": True, "evidence": "Mark will pay the invoice today"}]})
+    m = {"date": "2026-10-23", "notes_markdown": "Oleksii: maybe someone could look at monitoring someday. Olena — final regression report before go-live on 4 листопада"}
+    items = llm.extract_action_items(m)
+    assert [i["title"] for i in items] == ["regression report", "pay invoice"]
+    assert "ungrounded" not in items[0] and items[1]["ungrounded"] is True

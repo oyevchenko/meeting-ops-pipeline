@@ -6,7 +6,7 @@
     "prompt_tokens": 470,
     "completion_tokens": 309,
     "cost_usd": 0.000913,
-    "latency_ms": 1490,
+    "latency_ms": 1223,
     "errors": [
       "gemini-3-flash-preview: RateLimitError"
     ]
@@ -16,9 +16,9 @@
     "backend": "gemini-flash-lite-latest",
     "llm_calls": 1,
     "prompt_tokens": 408,
-    "completion_tokens": 111,
-    "cost_usd": 0.0004,
-    "latency_ms": 960,
+    "completion_tokens": 112,
+    "cost_usd": 0.000402,
+    "latency_ms": 938,
     "errors": [
       "gemini-3-flash-preview: RateLimitError"
     ]
@@ -28,9 +28,9 @@
     "backend": "gemini-flash-lite-latest",
     "llm_calls": 1,
     "prompt_tokens": 412,
-    "completion_tokens": 308,
-    "cost_usd": 0.000894,
-    "latency_ms": 1206,
+    "completion_tokens": 268,
+    "cost_usd": 0.000794,
+    "latency_ms": 1396,
     "errors": [
       "gemini-3-flash-preview: RateLimitError"
     ]

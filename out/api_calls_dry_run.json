@@ -11,7 +11,7 @@
         },
         "body": {
           "storage": {
-            "value": "<h1>Weekly Delivery Sync — Voice Agent Rollout</h1><p>The team reviewed the voice-agent rollout and decided to push the go-live to November 4, pending latency improvements. However, telephony routing currently suffers from latency issues that are being addressed.</p><h2>Decisions</h2><ul><li>Go-live moves to Nov 4 if latency &lt; 800ms.</li><li>Client approves Telegram as the second channel.</li></ul><h2>Action items</h2><ul><li>Dmytro Shevchuk: fix telephony latency and share benchmark (due 2026-10-24)</li><li>Olena Bondar: write regression test cases for CRM webhooks (due 2026-10-23)</li><li>Anna Koval: confirm Telegram bot naming and greeting text (due 2026-10-22)</li><li>Oleksii Yevchenko: schedule go/no-go call with client stakeholders (due 2026-10-28)</li></ul>",
+            "value": "<h1>Weekly Delivery Sync — Voice Agent Rollout</h1><p>The team reviewed the voice-agent rollout and approved Telegram as the second channel, while moving the go-live date to Nov 4 pending latency improvements. Telephony routing latency remains a current blocker.</p><h2>Decisions</h2><ul><li>Go-live moves to Nov 4 if latency &lt; 800ms</li><li>Client approves Telegram as the second channel</li></ul><h2>Action items</h2><ul><li>Dmytro Shevchuk: fix telephony latency and share benchmark (due 2026-10-24)</li><li>Olena Bondar: write regression test cases for CRM webhooks (due 2026-10-23)</li><li>Anna Koval: confirm Telegram bot naming and greeting text (due 2026-10-22)</li><li>Oleksii Yevchenko: schedule go/no-go call with client stakeholders (due 2026-10-28)</li></ul>",
             "representation": "storage"
           }
         }
@@ -290,7 +290,7 @@
         "message": {
           "to": "oleksii.yevchenko@gmail.com, anna@client.example, dmytro@team.example, olena@team.example",
           "subject": "[Closed] Weekly Delivery Sync — Voice Agent Rollout",
-          "body": "Hi all,\n\nAll action items from the Weekly Delivery Sync — Voice Agent Rollout held on 2026-10-21 are now completed as of 2026-10-27.\n\n- fix telephony latency and share benchmark — Dmytro Shevchuk, due 2026-10-24, done 2026-10-24\n- write regression test cases for CRM webhooks — Olena Bondar, due 2026-10-23, done 2026-10-23\n- confirm Telegram bot naming and greeting text — Anna Koval, due 2026-10-22, done 2026-10-25 (slipped 3 days)\n- schedule go/no-go call with client stakeholders — Oleksii Yevchenko, due 2026-10-28, done 2026-10-27\n\nSlips: 1 item slipped by 3 days.\n\nThanks everyone,\nOleksii"
+          "body": "Hi all,\n\nAll action items from our meeting on 2026-10-21 are now completed as of 2026-10-27.\n\n- fix telephony latency and share benchmark — Dmytro Shevchuk, due 2026-10-24, done 2026-10-24\n- write regression test cases for CRM webhooks — Olena Bondar, due 2026-10-23, done 2026-10-23\n- confirm Telegram bot naming and greeting text — Anna Koval, due 2026-10-22, done 2026-10-25 (slipped 3 days)\n- schedule go/no-go call with client stakeholders — Oleksii Yevchenko, due 2026-10-28, done 2026-10-27\n\nSlips: Anna Koval slipped 3 days.\n\nThanks everyone,\nOleksii"
         },
         "status": "DRAFT"
       }

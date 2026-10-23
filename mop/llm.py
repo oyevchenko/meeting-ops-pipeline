@@ -20,7 +20,7 @@ def _client():
     gem = not os.getenv("OPENAI_API_KEY")
     base = os.getenv("OPENAI_BASE_URL") or ("https://generativelanguage.googleapis.com/v1beta/openai/" if gem else None)
     models = [os.getenv("LLM_MODEL", "gemini-3-flash-preview" if gem else "gpt-4o-mini")]
-    models += [m for m in os.getenv("LLM_FALLBACK_MODELS", "gemini-flash-lite-latest,gemini-3.5-flash" if gem else "").split(",") if m]
+    models += [m for m in os.getenv("LLM_FALLBACK_MODELS", "gemini-flash-lite-latest,gemini-3.5-flash-lite,gemini-3.5-flash" if gem else "").split(",") if m]
     return OpenAI(api_key=key, base_url=base, timeout=60, max_retries=0), models
 
 def _create(cli, model, prompt, attempts=3, sleep=time.sleep):
@@ -112,17 +112,25 @@ def _check_items(o):
 def extract_action_items(meeting):
     d = date.fromisoformat(meeting["date"])
     def mock():
-        return {"items": [{"owner": o.strip(), "title": t, "due": dd, "due_raw": dd, "done": x == "x"} for x, o, t, dd in AI_RE.findall(meeting["notes_markdown"])]}
+        return {"items": [{"owner": o.strip(), "title": t, "due": dd, "due_raw": dd, "done": x == "x", "committed": True} for x, o, t, dd in AI_RE.findall(meeting["notes_markdown"])]}
     prompt = GUARD + (f"Meeting date: {d.isoformat()} ({d.strftime('%A')}). Extract every action item from the notes (any language; keep titles in the "
               "original language). Merge duplicates that describe the same task for the same person. Return JSON "
-              "{items:[{owner, title, due, due_raw, done}]}. owner = the name exactly as written, or null if nobody was assigned. "
+              "{items:[{owner, title, due, due_raw, done, committed, evidence}]}. Include only real commitments: someone was assigned or "
+              "accepted the task. Suggestions nobody took ('maybe someone could...', 'not urgent, nobody committed') get committed=false. "
+              "evidence = a short verbatim quote (max 12 words) from the notes that shows the task. owner = the name exactly as written, or null if nobody was assigned. "
               "due_raw = the deadline text exactly as written (or null). due = that deadline resolved to YYYY-MM-DD relative to the meeting date: "
               "'next <weekday>' / 'до наступної <день>' = that weekday in the following calendar week; 'end of (next) week' = Friday of that week; "
               "'до понеділка' / 'by Monday' = the next Monday; 'ASAP'/'терміново' = next business day; a bare day+month = that date in the "
               "meeting's year (or next year if already passed). due = null if there is no deadline.\n\n" + wrap(meeting["notes_markdown"]))
     items = _ask("extract_action_items", prompt, mock, validate=_check_items)["items"]
+    norm = lambda t: re.sub(r"\W+", " ", t.lower()).strip()
+    notes = norm(meeting["notes_markdown"])
     out = []
     for i in items:
+        if i.get("committed") is False:
+            continue  # suggestion, not a commitment
+        if i.get("evidence") and norm(i["evidence"]) not in notes:
+            i = {**i, "ungrounded": True}  # quote not found in the notes -> possible hallucination, flag for review
         det = resolve(i.get("due_raw"), d)
         src = "rule" if det else ("llm" if i.get("due") else None)
         out.append({**i, "due": det.isoformat() if det else i.get("due"), "due_source": src, "done": bool(i.get("done"))})

@@ -67,3 +67,8 @@ Debug/adjust iterations against the real LLM (Gemini via its OpenAI-compatible e
 - **Fix:** TRACE rows now hold llm_calls and summed prompt/completion tokens across re-asks, plus cost_usd (LLM_PRICE_IN/OUT per 1M tokens, configurable); totals() aggregates and run.py prints them.
 - **Test:** test_reask_tokens_are_counted_and_costed
 
+## 14. Drop uncommitted suggestions; require an evidence quote and flag ungrounded items
+- **Observed:** The live eval on samples/edge/long_transcript.json failed intermittently: in 2 of 3 runs gemini-flash-lite-latest extracted 'look at monitoring' (owner null) from 'maybe someone could look at monitoring someday, not urgent. Nobody committed.'
+- **Fix:** The prompt asks for committed + a verbatim evidence quote; committed=false items are dropped; if the evidence quote isn't in the notes the item is flagged ungrounded and held for review. 3/3 live reruns: 4 real items, no monitoring item. Also added gemini-3.5-flash-lite to the fallback chain after gemini-3-flash-preview and gemini-3.5-flash returned 429 for the whole session.
+- **Test:** test_uncommitted_suggestions_dropped_and_ungrounded_items_flagged; live eval passes
+

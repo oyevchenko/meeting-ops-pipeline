@@ -24,13 +24,21 @@ flowchart LR
 ```bash
 python -m venv .venv && . .venv/bin/activate && pip install pytest openai
 python run.py            # dry-run demo, writes out/*.json
-python -m pytest -q      # 10 tests
+python -m pytest -q      # offline tests
+RUN_LIVE=1 python -m pytest tests/test_live_evals.py   # evals against the real model
 LLM_MODE=mock python run.py   # offline; real LLM is the default when OPENAI_API_KEY or GEMINI_API_KEY is set
 ```
 Options: `Pipeline(today, dry_run=True, stakeholders="attendees"|"responsible", channel="slack"|"telegram"|"email")`.
 
+## Production hardening (see [docs/iterations.md](docs/iterations.md))
+- Real LLM by default (Gemini via OpenAI-compatible endpoint, model fallback chain), per-step trace with tokens/cost in `out/llm_trace.json`.
+- Input validation of the export; relative deadlines in UA/EN resolved by deterministic rules ("до наступної п'ятниці", "end of next week", "ASAP"); owners resolved to attendees with aliases, ambiguous ones sent to Oleksii for clarification.
+- Prompt-injection defence: notes are untrusted data; items touching outside addresses are held for review. Confluence body is escaped.
+- Idempotent re-ingestion, business-day reminders, owner emails in the item's language, closing report grounded in computed facts and validated.
+
 ## Outputs
 - `out/run_output.txt` – console run · `out/run_result.json` – per-item Jira key, calendar event, draft, reminders
+- `out/llm_trace.json` – which model answered each step, tokens, cost
 - `out/api_calls_dry_run.json` – every request that *would* be sent · `out/closing_report.json`
 
 ## How I used this in real projects

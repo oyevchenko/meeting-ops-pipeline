@@ -1,13 +1,13 @@
 {
   "dry_run": true,
   "summary": {
-    "tldr": "The team reviewed the voice-agent rollout and decided to push the go-live to November 4, pending latency improvements. However, telephony routing currently suffers from latency issues that are being addressed.",
+    "tldr": "The team reviewed the voice-agent rollout and approved Telegram as the second channel, while moving the go-live date to Nov 4 pending latency improvements. Telephony routing latency remains a current blocker.",
     "decisions": [
-      "Go-live moves to Nov 4 if latency < 800ms.",
-      "Client approves Telegram as the second channel."
+      "Go-live moves to Nov 4 if latency < 800ms",
+      "Client approves Telegram as the second channel"
     ],
     "risks": [
-      "Telephony routing still has latency issues."
+      "Telephony routing still has latency issues"
     ]
   },
   "suspicious_lines": [],
