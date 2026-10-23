@@ -63,10 +63,27 @@ def summarize(meeting):
         return {"tldr": sec("Summary").split("\n")[0], "decisions": [l[2:] for l in sec("Decisions").splitlines()]}
     return _ask("summarize", f"Summarize as JSON {{tldr, decisions[]}}:\n{md}", mock)
 
+ISO = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+def _check_items(o):
+    items = o.get("items")
+    if not isinstance(items, list): return ["'items' must be a list"]
+    bad = [i.get("due") for i in items if i.get("due") is not None and not (isinstance(i.get("due"), str) and ISO.match(i["due"]))]
+    return [f"due must be YYYY-MM-DD or null, got: {bad}"] if bad else []
+
 def extract_action_items(meeting):
+    d = date.fromisoformat(meeting["date"])
     def mock():
-        return {"items": [{"owner": o.strip(), "title": t, "due": d, "done": x == "x"} for x, o, t, d in AI_RE.findall(meeting["notes_markdown"])]}
-    return _ask("extract_action_items", f"Extract action items as JSON {{items:[{{owner,title,due,done}}]}}:\n{meeting['notes_markdown']}", mock)["items"]
+        return {"items": [{"owner": o.strip(), "title": t, "due": dd, "due_raw": dd, "done": x == "x"} for x, o, t, dd in AI_RE.findall(meeting["notes_markdown"])]}
+    prompt = (f"Meeting date: {d.isoformat()} ({d.strftime('%A')}). Extract every action item from the notes (any language; keep titles in the "
+              "original language). Merge duplicates that describe the same task for the same person. Return JSON "
+              "{items:[{owner, title, due, due_raw, done}]}. owner = the name exactly as written, or null if nobody was assigned. "
+              "due_raw = the deadline text exactly as written (or null). due = that deadline resolved to YYYY-MM-DD relative to the meeting date: "
+              "'next <weekday>' / 'до наступної <день>' = that weekday in the following calendar week; 'end of (next) week' = Friday of that week; "
+              "'до понеділка' / 'by Monday' = the next Monday; 'ASAP'/'терміново' = next business day; a bare day+month = that date in the "
+              "meeting's year (or next year if already passed). due = null if there is no deadline.\n\n" + meeting["notes_markdown"])
+    items = _ask("extract_action_items", prompt, mock, validate=_check_items)["items"]
+    return [{**i, "done": bool(i.get("done"))} for i in items]
 
 def closing_report(meeting, items, today):
     slips = [i for i in items if i["completed_on"] > i["due"]]  # facts are computed in code, the LLM only writes prose

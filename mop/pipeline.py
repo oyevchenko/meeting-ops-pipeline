@@ -7,8 +7,9 @@ OWNER = "oleksii.yevchenko@gmail.com"
 
 def plan_reminders(item, email, today, channel="slack"):
     """1 day before + on due date to the assignee (cc owner); escalation to owner if overdue and not done."""
-    due = date.fromisoformat(item["due"]); out = []
-    if item.get("done"): return out
+    out = []
+    if item.get("done") or not item.get("due"): return out
+    due = date.fromisoformat(item["due"])
     if due < today:
         out.append({"kind": "escalation", "at": today.isoformat(), "to": [OWNER, email], "channel": channel,
                     "text": f"⚠️ OVERDUE since {item['due']}: '{item['title']}' ({item['owner']}). Please give a new ETA today."})
@@ -34,6 +35,11 @@ class Pipeline:
         results = []
         for i in items:
             em = emails.get(i["owner"], OWNER)
+            if not i.get("due"):  # no deadline agreed: no calendar/reminders, ask the owner of the meeting to clarify
+                mail = self.gmail.create_draft(OWNER, f"Clarify deadline: {i['title']}",
+                    f"Action item without a deadline from '{meeting['title']}': {i['title']} (owner: {i['owner'] or 'unassigned'}). Please agree a due date.")
+                results.append({**i, "email": em, "jira": None, "calendar_event": None, "draft": mail["id"], "reminders": [], "needs": ["due_date"]})
+                continue
             issue = self.jira.create_issue(i["title"], em, i["due"])
             call = self.calendar.create_event(f"Follow-up: {i['title']}", i["due"], [em, OWNER],
                                               reminders=[{"method": "popup", "minutes": 1440}, {"method": "email", "minutes": 60}])

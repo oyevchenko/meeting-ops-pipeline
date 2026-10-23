@@ -82,3 +82,13 @@ def test_closing_report_slip_count_is_computed_not_llm(monkeypatch):
     items = _items_done()
     monkeypatch.setattr(llm, "_ask", lambda *a, **k: {"subject": "[Closed] x", "body": "b", "slips": 0})
     assert llm.closing_report(M, items, "2026-10-27")["slips"] == 1
+
+def test_free_text_due_dates_fail_validation():
+    assert llm._check_items({"items": [{"due": "наступна п'ятниця"}, {"due": "ASAP"}, {"due": None}, {"due": "2026-10-30"}]}) \
+        == ["due must be YYYY-MM-DD or null, got: [\"наступна п'ятниця\", 'ASAP']"]
+
+def test_item_without_due_date_gets_clarification_not_reminders(monkeypatch):
+    monkeypatch.setattr(llm, "extract_action_items", lambda m: [{"owner": None, "title": "Оновити Confluence", "due": None, "done": False}])
+    p = Pipeline(T); r = p.run(M)
+    assert r["items"][0]["needs"] == ["due_date"] and r["items"][0]["reminders"] == [] and p.calendar.calls == []
+    assert p.gmail.calls[0]["body"]["message"]["to"] == "oleksii.yevchenko@gmail.com"

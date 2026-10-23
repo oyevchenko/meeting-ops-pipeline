@@ -17,3 +17,15 @@ def test_live_closing_report_lists_every_item_and_slip():
     assert llm.TRACE[-1]["backend"] != "mock (fallback)", llm.TRACE[-1]
     assert c["subject"].startswith("[Closed]") and m["title"] in c["subject"]
     assert all(i["title"] in c["body"] for i in items) and "3 days" in c["body"]
+
+def test_live_relative_dates_resolved_from_meeting_date():
+    from mop import llm
+    m = json.loads((S / "edge" / "messy_ua_mixed.json").read_text())  # meeting on Friday 2026-10-23
+    items = llm.extract_action_items(m)
+    assert llm.TRACE[-1]["backend"] != "mock (fallback)", llm.TRACE[-1]
+    by = {i["title"].lower(): i["due"] for i in items}
+    due = lambda kw: next(v for k, v in by.items() if kw in k)
+    assert due("мапінг") == "2026-10-30" and due("regression") == "2026-10-30"
+    assert due("edge") == "2026-10-26" and due("demo") == "2026-11-03"
+    assert due("credentials") == "2026-10-26" and due("confluence") is None
+    assert sum("regression" in k for k in by) == 1  # duplicate line merged

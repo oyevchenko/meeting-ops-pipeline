@@ -1,0 +1,7 @@
+{"source":"notion-ai-meeting-notes","title":"Синк з клієнтом — інтеграція з ERP","date":"2026-10-23","attendees":[
+ {"name":"Oleksii Yevchenko","email":"oleksii.yevchenko@gmail.com","role":"Delivery Manager"},
+ {"name":"Dmytro Shevchuk","email":"dmytro@team.example","role":"Integration Engineer"},
+ {"name":"Dmytro Hnatiuk","email":"d.hnatiuk@team.example","role":"Backend"},
+ {"name":"Olena Bondar","email":"olena@team.example","role":"QA Lead"},
+ {"name":"Mark Fischer","email":"mark@client.example","role":"Client CTO"}],
+"notes_markdown":"## Summary\nОбговорили синхронізацію замовлень з 1C кожні 5 хв. Mark wants a demo before the steering committee.\n\n## Notes\n- Діма сказав що зробить мапінг полів до наступної п'ятниці\n- Olena: regression suite for order sync — by end of next week\n- Mark to send API credentials for staging ASAP\n- Хтось має оновити Confluence зі схемою інтеграції (не домовились хто)\n- We agreed to book the demo for the steering committee, Oleksii owns it, 3 листопада\n- Олена також: напише тест-кейси для edge cases, до понеділка\n- Olena will write the regression suite for order sync by end of next week\n"}
