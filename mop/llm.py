@@ -2,6 +2,7 @@
 (Gemini via its OpenAI-compatible endpoint); deterministic mock when LLM_MODE=mock or no key."""
 import json, os, re, time
 from datetime import date
+from .dates import resolve
 
 TRACE: list[dict] = []  # one row per pipeline step: which backend actually answered, tokens, latency
 
@@ -83,7 +84,12 @@ def extract_action_items(meeting):
               "'до понеділка' / 'by Monday' = the next Monday; 'ASAP'/'терміново' = next business day; a bare day+month = that date in the "
               "meeting's year (or next year if already passed). due = null if there is no deadline.\n\n" + meeting["notes_markdown"])
     items = _ask("extract_action_items", prompt, mock, validate=_check_items)["items"]
-    return [{**i, "done": bool(i.get("done"))} for i in items]
+    out = []
+    for i in items:
+        det = resolve(i.get("due_raw"), d)
+        src = "rule" if det else ("llm" if i.get("due") else None)
+        out.append({**i, "due": det.isoformat() if det else i.get("due"), "due_source": src, "done": bool(i.get("done"))})
+    return out
 
 def closing_report(meeting, items, today):
     slips = [i for i in items if i["completed_on"] > i["due"]]  # facts are computed in code, the LLM only writes prose

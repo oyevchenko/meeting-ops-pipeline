@@ -17,3 +17,8 @@ Debug/adjust iterations against the real LLM (Gemini via its OpenAI-compatible e
 - **Fix:** Prompt now includes the meeting date + weekday, rules for relative dates, keeps due_raw; _check_items() rejects non-ISO dues and triggers a re-ask; items with due=null skip calendar/reminders and produce a 'Clarify deadline' draft to Oleksii. Live rerun: all dues ISO, null for the unassigned Confluence item.
 - **Test:** test_free_text_due_dates_fail_validation, test_item_without_due_date_gets_clarification_not_reminders, live: test_live_relative_dates_resolved_from_meeting_date
 
+## 4. Deterministic resolver for deadline phrases; LLM date only as fallback
+- **Observed:** Two live runs of the same notes gave different dates for "до наступної п'ятниці" from a Friday meeting: 2026-11-06 in one run, 2026-10-30 in the next (the live eval failed once, then passed). LLM date arithmetic isn't reliable enough for reminders and escalations.
+- **Fix:** mop/dates.py resolve(): EN/UA rules for next <weekday>, end of (next) week, by Monday/до понеділка, ASAP/терміново (next business day), tomorrow, '3 листопада'/'Nov 3' (rolls to next year if passed), ISO. The rule result wins over the LLM; due_source = rule|llm|None is kept per item.
+- **Test:** tests/test_dates.py: 15 parametrized cases + test_rule_overrides_inconsistent_llm_date
+
