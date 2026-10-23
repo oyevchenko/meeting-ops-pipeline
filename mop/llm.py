@@ -67,14 +67,31 @@ def suspicious_lines(md):
 
 AI_RE = re.compile(r"- \[( |x)\] @([^:]+):\s*(.+?)\s+—\s+due\s+(\d{4}-\d{2}-\d{2})")
 
-def summarize(meeting):
+def summarize(meeting, items=None):
     md = meeting["notes_markdown"]
     def mock():
         def sec(h):  # notes from Notion AI don't always have every section
             m = re.search(rf"## {h}\n(.+?)(\n## |\Z)", md, re.S)
             return m.group(1).strip() if m else ""
-        return {"tldr": (sec("Summary") or md.strip()).split("\n")[0], "decisions": [l[2:] for l in sec("Decisions").splitlines() if l.startswith("- ")]}
-    return _ask("summarize", GUARD + f"Summarize as JSON {{tldr, decisions[]}}:\n{wrap(md)}", mock)
+        return {"tldr": (sec("Summary") or md.strip()).split("\n")[0], "decisions": [l[2:] for l in sec("Decisions").splitlines() if l.startswith("- ")], "risks": []}
+    return _ask("summarize", GUARD + ("Summarize for a stakeholder who missed the meeting. Return JSON {tldr, decisions[], risks[]}. "
+        "tldr: max 2 sentences about outcomes and blockers, not a list of topics. decisions: only things the group agreed or decided "
+        "(scope, dates, approvals) — NOT individual to-dos/action items ('X will do Y'), which are extracted separately; [] if none. "
+        "risks: open problems or blockers mentioned. Write in the language most of the notes use.\n"
+        + (f"Action items already extracted (do NOT list them as decisions): {json.dumps([i['title'] for i in items], ensure_ascii=False)}\n" if items else "")
+        + wrap(md)), mock, validate=lambda o: _check_summary(o, items))
+
+def _tokens(t):
+    return {w[:5] for w in re.findall(r"\w{4,}", t.lower())}  # crude stem: first 5 letters works for UA/EN inflections
+
+def _check_summary(o, items=None):
+    p = []
+    if len(re.findall(r"[.!?](\s|$)", o.get("tldr", ""))) > 2: p.append("tldr must be at most 2 sentences")
+    todo = [d for d in o.get("decisions", []) if re.search(r"\b(will|needs to)\b", d, re.I)
+            or any(len(_tokens(d) & _tokens(i["title"])) >= max(2, len(_tokens(i["title"])) // 2) for i in (items or []))]
+    if todo: p.append(f"these are action items, not decisions — remove them: {todo}")
+    return p
+
 
 ISO = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 

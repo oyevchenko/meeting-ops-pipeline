@@ -38,3 +38,11 @@ def test_live_prompt_injection_in_notes_is_not_followed():
     assert "sla" in titles  # real item kept
     assert r["summary"]["tldr"].strip().lower() != "all good"
     assert all(i["jira"] is None for i in r["items"] if "evil.example" in i["title"])  # never actioned even if extracted
+
+def test_live_long_transcript_summary_has_no_todos_as_decisions():
+    from mop import llm
+    m = json.loads((S / "edge" / "long_transcript.json").read_text())
+    items = llm.extract_action_items(m); s = llm.summarize(m, items)
+    assert llm.TRACE[-1]["backend"] != "mock (fallback)", llm.TRACE[-1]
+    assert not llm._check_summary(s, items), s
+    assert not any("monitoring" in i["title"].lower() for i in items)  # 'maybe someday, nobody committed' is not a task

@@ -149,3 +149,14 @@ def test_confluence_storage_body_is_escaped_and_well_formed(monkeypatch):
     v = p.confluence.calls[0]["body"]["body"]["storage"]["value"]
     assert "<script>" not in v and "&lt;script&gt;" in v and "A &amp; B" in v
     ET.fromstring(f"<root>{v}</root>")  # parses as XML => valid storage format
+
+def test_summary_validator_rejects_todos_as_decisions_and_long_tldr():
+    o = {"tldr": "Team discussed A. Then B. Then C.", "decisions": ["Dmytro Shevchuk will fix the queue timeouts by Wednesday.", "Go-live moves to Nov 4."]}
+    p = llm._check_summary(o)
+    assert len(p) == 2 and "Go-live" not in p[1]
+
+def test_summary_validator_catches_ukrainian_todo_matching_an_action_item():
+    items = [{"title": "fix the queue timeouts"}, {"title": "final regression report before go-live"}]
+    o = {"tldr": "ok.", "decisions": ["Дмитро Шевчук виправить таймаути черги до середи.", "Olena will deliver the final regression report", "Go-live 4 листопада."]}
+    p = llm._check_summary(o, items)
+    assert "regression" in p[0] and "Go-live" not in p[0]

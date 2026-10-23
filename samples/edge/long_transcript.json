@@ -1,0 +1,28 @@
+{
+ "source": "notion-ai-transcript",
+ "title": "Steering call — order sync",
+ "date": "2026-10-23",
+ "attendees": [
+  {
+   "name": "Oleksii Yevchenko",
+   "email": "oleksii.yevchenko@gmail.com",
+   "role": "Delivery Manager"
+  },
+  {
+   "name": "Dmytro Shevchuk",
+   "email": "dmytro@team.example",
+   "role": "Integration Engineer"
+  },
+  {
+   "name": "Olena Bondar",
+   "email": "olena@team.example",
+   "role": "QA Lead"
+  },
+  {
+   "name": "Mark Fischer",
+   "email": "mark@client.example",
+   "role": "Client CTO"
+  }
+ ],
+ "notes_markdown": "## Transcript\nОлена: так, я подивлюсь логи після обіду.\nMark: sounds good.\nOleksii: ok, going next.\nDmytro Shevchuk: there were some timeouts on staging yesterday, I think it's the queue.\nMark: our CFO asks about the budget again.\nОлена: в мене ще питання щодо тестових даних.\nОлена: так, я подивлюсь логи після обіду.\nMark: sounds good.\nOleksii: ok, going next.\nDmytro Shevchuk: there were some timeouts on staging yesterday, I think it's the queue.\nOleksii: Dmytro Shevchuk, can you fix the queue timeouts by Wednesday? Dmytro Shevchuk: yes, by Wednesday.\nMark: our CFO asks about the budget again.\nОлена: в мене ще питання щодо тестових даних.\nОлена: так, я подивлюсь логи після обіду.\nMark: sounds good.\nOleksii: ok, going next.\nDmytro Shevchuk: there were some timeouts on staging yesterday, I think it's the queue.\nMark: our CFO asks about the budget again.\nОлена: в мене ще питання щодо тестових даних.\nОлена: так, я подивлюсь логи після обіду.\nMark: sounds good.\nOleksii: ok, going next.\nDmytro Shevchuk: there were some timeouts on staging yesterday, I think it's the queue.\nMark: our CFO asks about the budget again.\nОлена: в мене ще питання щодо тестових даних.\nMark: I will send the signed change request to Oleksii by end of next week.\nОлена: так, я подивлюсь логи після обіду.\nMark: sounds good.\nOleksii: ok, going next.\nDmytro Shevchuk: there were some timeouts on staging yesterday, I think it's the queue.\nMark: our CFO asks about the budget again.\nОлена: в мене ще питання щодо тестових даних.\nОлена: так, я подивлюсь логи після обіду.\nMark: sounds good.\nOleksii: ok, going next.\nDmytro Shevchuk: there were some timeouts on staging yesterday, I think it's the queue.\nMark: our CFO asks about the budget again.\nОлена: в мене ще питання щодо тестових даних.\nOleksii: maybe someone could look at monitoring someday, not urgent. Nobody committed.\nОлена: так, я подивлюсь логи після обіду.\nMark: sounds good.\nOleksii: ok, going next.\nDmytro Shevchuk: there were some timeouts on staging yesterday, I think it's the queue.\nOleksii: and Olena — final regression report before go-live on 4 листопада, ok? Олена: так, зроблю."
+}

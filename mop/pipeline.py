@@ -49,7 +49,7 @@ class Pipeline:
 
     def _run(self, meeting):
         emails = {a["name"]: a["email"] for a in meeting["attendees"]}
-        s = llm.summarize(meeting); items = llm.extract_action_items(meeting)
+        items = llm.extract_action_items(meeting); s = llm.summarize(meeting, items)
         sus = llm.suspicious_lines(meeting["notes_markdown"])
         allowed = {a["email"].split("@")[1] for a in meeting["attendees"]}
         for i in items:  # anything touching an outside address or living in an instruction-like line is held for a human

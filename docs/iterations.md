@@ -42,3 +42,8 @@ Debug/adjust iterations against the real LLM (Gemini via its OpenAI-compatible e
 - **Fix:** All user/LLM text is html.escape()d before it goes into the storage body; missing owner/due are rendered as 'unassigned'/'TBD'.
 - **Test:** test_confluence_storage_body_is_escaped_and_well_formed (asserts escaping and that the body parses as XML)
 
+## 9. Summary: decisions vs action items, 2-sentence TL;DR, risks; extract items first
+- **Observed:** Live summary of samples/edge/long_transcript.json (a raw ~45-line UA/EN call transcript) had a TL;DR that just listed topics, and 'decisions' that were really to-dos ('Dmytro Shevchuk will fix the queue timeouts...', 'Олена підготує фінальний звіт...'). A first validator using English keywords missed the Ukrainian ones.
+- **Fix:** Items are now extracted first and passed to summarize() as 'do NOT list as decisions'; the prompt asks for a 2-sentence TL;DR about outcomes/blockers, decisions only for group agreements, plus risks[]. _check_summary() re-asks on a long TL;DR, 'will'/'needs to' or decisions that overlap an item title (crude 5-letter stems). Live rerun: outcome-focused TL;DR, decisions [], 3 risks. Known limit: overlap check doesn't work across languages.
+- **Test:** test_summary_validator_rejects_todos_as_decisions_and_long_tldr, test_summary_validator_catches_ukrainian_todo_matching_an_action_item, live: test_live_long_transcript_summary_has_no_todos_as_decisions
+
