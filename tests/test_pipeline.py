@@ -90,5 +90,26 @@ def test_free_text_due_dates_fail_validation():
 def test_item_without_due_date_gets_clarification_not_reminders(monkeypatch):
     monkeypatch.setattr(llm, "extract_action_items", lambda m: [{"owner": None, "title": "Оновити Confluence", "due": None, "done": False}])
     p = Pipeline(T); r = p.run(M)
-    assert r["items"][0]["needs"] == ["due_date"] and r["items"][0]["reminders"] == [] and p.calendar.calls == []
+    assert r["items"][0]["needs"] == ["owner (unassigned)", "due_date"] and r["items"][0]["reminders"] == [] and p.calendar.calls == []
     assert p.gmail.calls[0]["body"]["message"]["to"] == "oleksii.yevchenko@gmail.com"
+
+ATT = json.loads((pathlib.Path(__file__).parent.parent / "samples/edge/messy_ua_mixed.json").read_text())["attendees"]
+def test_owner_aliases_and_first_names_resolve_to_attendees():
+    from mop.owners import resolve_owner
+    assert resolve_owner("Олена", ATT)[0]["email"] == "olena@team.example"
+    assert resolve_owner("Mark", ATT)[0]["email"] == "mark@client.example"
+    assert resolve_owner("Oleksii", ATT)[0]["name"] == "Oleksii Yevchenko"
+
+def test_ambiguous_and_missing_owner_are_flagged():
+    from mop.owners import resolve_owner
+    assert resolve_owner("Діма", ATT) == (None, "ambiguous: Dmytro Shevchuk / Dmytro Hnatiuk")
+    assert resolve_owner(None, ATT) == (None, "unassigned")
+
+def test_pipeline_routes_ambiguous_owner_to_oleksii_with_clarification(monkeypatch):
+    m = json.loads((pathlib.Path(__file__).parent.parent / "samples/edge/messy_ua_mixed.json").read_text())
+    monkeypatch.setattr(llm, "extract_action_items", lambda _: [{"owner": "Діма", "title": "мапінг полів", "due": "2026-10-30", "done": False},
+                                                                 {"owner": "Mark", "title": "creds", "due": "2026-10-26", "done": False}])
+    p = Pipeline(T); r = p.run(m)
+    assert r["items"][0]["email"] == "oleksii.yevchenko@gmail.com" and r["items"][0]["needs"][0].startswith("owner (ambiguous")
+    assert r["items"][1]["email"] == "mark@client.example" and r["items"][1]["owner"] == "Mark Fischer"
+    assert any(c["body"]["message"]["subject"].startswith("Clarify owner") for c in p.gmail.calls)

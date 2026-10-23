@@ -60,8 +60,10 @@ AI_RE = re.compile(r"- \[( |x)\] @([^:]+):\s*(.+?)\s+—\s+due\s+(\d{4}-\d{2}-\d
 def summarize(meeting):
     md = meeting["notes_markdown"]
     def mock():
-        sec = lambda h: re.search(rf"## {h}\n(.+?)(\n## |\Z)", md, re.S).group(1).strip()
-        return {"tldr": sec("Summary").split("\n")[0], "decisions": [l[2:] for l in sec("Decisions").splitlines()]}
+        def sec(h):  # notes from Notion AI don't always have every section
+            m = re.search(rf"## {h}\n(.+?)(\n## |\Z)", md, re.S)
+            return m.group(1).strip() if m else ""
+        return {"tldr": (sec("Summary") or md.strip()).split("\n")[0], "decisions": [l[2:] for l in sec("Decisions").splitlines() if l.startswith("- ")]}
     return _ask("summarize", f"Summarize as JSON {{tldr, decisions[]}}:\n{md}", mock)
 
 ISO = re.compile(r"^\d{4}-\d{2}-\d{2}$")

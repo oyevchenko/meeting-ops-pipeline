@@ -22,3 +22,8 @@ Debug/adjust iterations against the real LLM (Gemini via its OpenAI-compatible e
 - **Fix:** mop/dates.py resolve(): EN/UA rules for next <weekday>, end of (next) week, by Monday/до понеділка, ASAP/терміново (next business day), tomorrow, '3 листопада'/'Nov 3' (rolls to next year if passed), ISO. The rule result wins over the LLM; due_source = rule|llm|None is kept per item.
 - **Test:** tests/test_dates.py: 15 parametrized cases + test_rule_overrides_inconsistent_llm_date
 
+## 5. Resolve owners to attendees (aliases, first names); flag ambiguous/unassigned
+- **Observed:** On the messy UA/EN notes the model returned owners as written ('Діма', 'Olena', 'Олена', 'Mark', 'Oleksii', null). The exact-name lookup failed for all of them, so every task, email draft and reminder silently went to Oleksii, including the client CTO's. 'Діма' could be either of two Dmytros. A test on these notes also showed the offline mock summarizer crashing (AttributeError) when a '## Decisions' section is missing.
+- **Fix:** mop/owners.py resolve_owner(): exact name, then first name with UA/EN aliases (Діма→Dmytro, Олена→Olena...). Ambiguous or unknown owners are routed to Oleksii with needs=['owner (...)'] and a 'Clarify owner' draft. The mock summarizer now tolerates missing sections. Rerun: Olena/Mark/Oleksii resolved, Діма flagged ambiguous, unassigned item flagged.
+- **Test:** test_owner_aliases_and_first_names_resolve_to_attendees, test_ambiguous_and_missing_owner_are_flagged, test_pipeline_routes_ambiguous_owner_to_oleksii_with_clarification
+

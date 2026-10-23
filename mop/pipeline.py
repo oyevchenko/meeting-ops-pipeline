@@ -1,6 +1,7 @@
 """Notion AI notes -> summary -> Confluence -> action items -> calls, emails, tasks, reminders -> closing report."""
 from datetime import date, timedelta
 from . import llm
+from .owners import resolve_owner
 from .clients import Confluence, Calendar, Gmail, Jira, Notifier
 
 OWNER = "oleksii.yevchenko@gmail.com"
@@ -34,11 +35,14 @@ class Pipeline:
         page = self.confluence.create_page("DEL", f"{meeting['date']} {meeting['title']}", html)
         results = []
         for i in items:
-            em = emails.get(i["owner"], OWNER)
+            who, problem = resolve_owner(i.get("owner"), meeting["attendees"])
+            em = who["email"] if who else OWNER  # unresolved owners go to Oleksii for triage, never silently
+            if who: i = {**i, "owner": who["name"]}
+            needs = [f"owner ({problem})"] if problem else []
             if not i.get("due"):  # no deadline agreed: no calendar/reminders, ask the owner of the meeting to clarify
                 mail = self.gmail.create_draft(OWNER, f"Clarify deadline: {i['title']}",
                     f"Action item without a deadline from '{meeting['title']}': {i['title']} (owner: {i['owner'] or 'unassigned'}). Please agree a due date.")
-                results.append({**i, "email": em, "jira": None, "calendar_event": None, "draft": mail["id"], "reminders": [], "needs": ["due_date"]})
+                results.append({**i, "email": em, "jira": None, "calendar_event": None, "draft": mail["id"], "reminders": [], "needs": needs + ["due_date"]})
                 continue
             issue = self.jira.create_issue(i["title"], em, i["due"])
             call = self.calendar.create_event(f"Follow-up: {i['title']}", i["due"], [em, OWNER],
@@ -48,7 +52,9 @@ class Pipeline:
                 f"I booked a short follow-up on the due date.\n\nThanks,\nOleksii")
             rems = [dict(r, scheduled=self.notify.schedule(r["channel"], ",".join(r["to"]), r["at"], r["text"])["id"])
                     for r in plan_reminders(i, em, self.today, self.channel)]
-            results.append({**i, "email": em, "jira": issue["key"], "calendar_event": call["id"], "draft": mail["id"], "reminders": rems})
+            if problem:
+                self.gmail.create_draft(OWNER, f"Clarify owner: {i['title']}", f"From '{meeting['title']}': '{i['title']}' — {problem}. Please assign an owner.")
+            results.append({**i, "email": em, "jira": issue["key"], "calendar_event": call["id"], "draft": mail["id"], "reminders": rems, "needs": needs})
         return {"dry_run": self.dry_run, "summary": s, "confluence_page": page["id"], "items": results}
 
     def close_if_done(self, meeting, items):
