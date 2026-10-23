@@ -47,3 +47,8 @@ Debug/adjust iterations against the real LLM (Gemini via its OpenAI-compatible e
 - **Fix:** Items are now extracted first and passed to summarize() as 'do NOT list as decisions'; the prompt asks for a 2-sentence TL;DR about outcomes/blockers, decisions only for group agreements, plus risks[]. _check_summary() re-asks on a long TL;DR, 'will'/'needs to' or decisions that overlap an item title (crude 5-letter stems). Live rerun: outcome-focused TL;DR, decisions [], 3 risks. Known limit: overlap check doesn't work across languages.
 - **Test:** test_summary_validator_rejects_todos_as_decisions_and_long_tldr, test_summary_validator_catches_ukrainian_todo_matching_an_action_item, live: test_live_long_transcript_summary_has_no_todos_as_decisions
 
+## 10. Validate Notion export input before any LLM call
+- **Observed:** Feeding slightly different exports crashed deep in the pipeline with bare errors: no attendees -> KeyError 'attendees'; no date -> KeyError 'date'; '23.10.2026' -> ValueError from date.fromisoformat. Nothing told the user what was wrong with the file.
+- **Fix:** mop/inputs.py: pydantic Meeting/Attendee model; accepts YYYY-MM-DD, DD.MM.YYYY, DD/MM/YYYY and ISO timestamps; attendees optional; raises InputError with field-level messages (also for invalid JSON) before any LLM call or API side effect.
+- **Test:** test_bad_exports_fail_fast_with_readable_errors_and_no_side_effects, test_dotted_date_and_missing_attendees_are_normalised
+

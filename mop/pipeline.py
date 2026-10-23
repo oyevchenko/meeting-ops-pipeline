@@ -3,6 +3,7 @@ import hashlib, html, json, pathlib, re
 from datetime import date, timedelta
 from . import llm
 from .owners import resolve_owner
+from .inputs import load_meeting
 from .clients import Confluence, Calendar, Gmail, Jira, Notifier
 
 OWNER = "oleksii.yevchenko@gmail.com"
@@ -40,6 +41,7 @@ class Pipeline:
     def run(self, meeting):
         """Idempotent: re-ingesting the same Notion export (sync retries, manual re-run) returns the stored result
         instead of creating a second Confluence page, Jira issues, drafts and reminders."""
+        meeting = load_meeting(meeting)  # fail fast with a readable error, before any LLM call or side effect
         key = self.meeting_key(meeting)
         if key in self.state:
             return {**self.state[key], "duplicate": True}

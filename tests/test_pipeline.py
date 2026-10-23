@@ -1,3 +1,4 @@
+import pytest
 import json, pathlib
 from datetime import date
 from mop.pipeline import Pipeline, plan_reminders
@@ -160,3 +161,18 @@ def test_summary_validator_catches_ukrainian_todo_matching_an_action_item():
     o = {"tldr": "ok.", "decisions": ["Дмитро Шевчук виправить таймаути черги до середи.", "Olena will deliver the final regression report", "Go-live 4 листопада."]}
     p = llm._check_summary(o, items)
     assert "regression" in p[0] and "Go-live" not in p[0]
+
+def test_bad_exports_fail_fast_with_readable_errors_and_no_side_effects():
+    from mop.inputs import InputError
+    p = Pipeline(T)
+    for bad, msg in [('{"title": "x", "notes_markdown": "a"', "not valid JSON"),
+                     ({"title": "x", "notes_markdown": "a"}, "date: Field required"),
+                     ({"title": "x", "date": "yesterday", "notes_markdown": "a"}, "unrecognised date"),
+                     ({"title": "x", "date": "2026-10-23", "notes_markdown": "a", "attendees": [{"name": "A", "email": "nope"}]}, "attendees.0.email")]:
+        with pytest.raises(InputError, match=msg): p.run(bad)
+    assert p.confluence.calls == [] and p.jira.calls == []
+
+def test_dotted_date_and_missing_attendees_are_normalised():
+    from mop.inputs import load_meeting
+    m = load_meeting({"title": "x", "date": "23.10.2026", "notes_markdown": "hi"})
+    assert m["date"] == "2026-10-23" and m["attendees"] == []
