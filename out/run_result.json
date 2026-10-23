@@ -1,0 +1,124 @@
+{
+  "dry_run": true,
+  "summary": {
+    "tldr": "Team reviewed the voice-agent rollout for the client contact center. CRM webhook integration is done in staging; telephony routing still has latency issues.",
+    "decisions": [
+      "Go-live moves to Nov 4 if latency < 800ms.",
+      "Client approves Telegram as the second channel."
+    ]
+  },
+  "confluence_page": "1",
+  "items": [
+    {
+      "owner": "Dmytro Shevchuk",
+      "title": "fix telephony latency and share benchmark",
+      "due": "2026-10-24",
+      "done": false,
+      "email": "dmytro@team.example",
+      "jira": "OPS-201",
+      "calendar_event": "1",
+      "draft": "1",
+      "reminders": [
+        {
+          "kind": "T-1",
+          "at": "2026-10-23",
+          "to": [
+            "dmytro@team.example"
+          ],
+          "channel": "slack",
+          "text": "Reminder: 'fix telephony latency and share benchmark' is due tomorrow (2026-10-24).",
+          "scheduled": "1"
+        },
+        {
+          "kind": "due-today",
+          "at": "2026-10-24",
+          "to": [
+            "dmytro@team.example",
+            "oleksii.yevchenko@gmail.com"
+          ],
+          "channel": "slack",
+          "text": "Due today: 'fix telephony latency and share benchmark'. Reply 'done' or share blockers.",
+          "scheduled": "2"
+        }
+      ]
+    },
+    {
+      "owner": "Olena Bondar",
+      "title": "write regression test cases for CRM webhooks",
+      "due": "2026-10-23",
+      "done": false,
+      "email": "olena@team.example",
+      "jira": "OPS-202",
+      "calendar_event": "2",
+      "draft": "2",
+      "reminders": [
+        {
+          "kind": "due-today",
+          "at": "2026-10-23",
+          "to": [
+            "olena@team.example",
+            "oleksii.yevchenko@gmail.com"
+          ],
+          "channel": "slack",
+          "text": "Due today: 'write regression test cases for CRM webhooks'. Reply 'done' or share blockers.",
+          "scheduled": "3"
+        }
+      ]
+    },
+    {
+      "owner": "Anna Koval",
+      "title": "confirm Telegram bot naming and greeting text",
+      "due": "2026-10-22",
+      "done": false,
+      "email": "anna@client.example",
+      "jira": "OPS-203",
+      "calendar_event": "3",
+      "draft": "3",
+      "reminders": [
+        {
+          "kind": "escalation",
+          "at": "2026-10-23",
+          "to": [
+            "oleksii.yevchenko@gmail.com",
+            "anna@client.example"
+          ],
+          "channel": "slack",
+          "text": "⚠️ OVERDUE since 2026-10-22: 'confirm Telegram bot naming and greeting text' (Anna Koval). Please give a new ETA today.",
+          "scheduled": "4"
+        }
+      ]
+    },
+    {
+      "owner": "Oleksii Yevchenko",
+      "title": "schedule go/no-go call with client stakeholders",
+      "due": "2026-10-28",
+      "done": false,
+      "email": "oleksii.yevchenko@gmail.com",
+      "jira": "OPS-204",
+      "calendar_event": "4",
+      "draft": "4",
+      "reminders": [
+        {
+          "kind": "T-1",
+          "at": "2026-10-27",
+          "to": [
+            "oleksii.yevchenko@gmail.com"
+          ],
+          "channel": "slack",
+          "text": "Reminder: 'schedule go/no-go call with client stakeholders' is due tomorrow (2026-10-28).",
+          "scheduled": "5"
+        },
+        {
+          "kind": "due-today",
+          "at": "2026-10-28",
+          "to": [
+            "oleksii.yevchenko@gmail.com"
+          ],
+          "channel": "slack",
+          "text": "Due today: 'schedule go/no-go call with client stakeholders'. Reply 'done' or share blockers.",
+          "scheduled": "6"
+        }
+      ]
+    }
+  ]
+}

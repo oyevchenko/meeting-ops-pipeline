@@ -1,0 +1,13 @@
+
+tests/test_pipeline.py::test_extracts_four_action_items_with_owners_and_dates PASSED [ 10%]
+tests/test_pipeline.py::test_summary_has_decisions PASSED                [ 20%]
+tests/test_pipeline.py::test_end_to_end_dry_run_creates_artifacts_and_sends_nothing PASSED [ 30%]
+tests/test_pipeline.py::test_reminders_t_minus_1_and_due_day PASSED      [ 40%]
+tests/test_pipeline.py::test_reminder_due_tomorrow_skips_nothing_and_today_only_due_day PASSED [ 50%]
+tests/test_pipeline.py::test_overdue_escalates_to_owner PASSED           [ 60%]
+tests/test_pipeline.py::test_done_items_get_no_reminders PASSED          [ 70%]
+tests/test_pipeline.py::test_no_closing_report_until_all_done PASSED     [ 80%]
+tests/test_pipeline.py::test_closing_report_lists_slips_and_goes_to_attendees_as_draft PASSED [ 90%]
+tests/test_pipeline.py::test_closing_report_responsible_only_mode PASSED [100%]
+
+============================== 10 passed in 0.02s ==============================

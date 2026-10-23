@@ -1,0 +1,361 @@
+{
+  "confluence": [
+    {
+      "method": "POST",
+      "url": "/wiki/rest/api/content",
+      "body": {
+        "type": "page",
+        "title": "2026-10-21 Weekly Delivery Sync — Voice Agent Rollout",
+        "space": {
+          "key": "DEL"
+        },
+        "body": {
+          "storage": {
+            "value": "<h1>Weekly Delivery Sync — Voice Agent Rollout</h1><p>Team reviewed the voice-agent rollout for the client contact center. CRM webhook integration is done in staging; telephony routing still has latency issues.</p><h2>Decisions</h2><ul><li>Go-live moves to Nov 4 if latency < 800ms.</li><li>Client approves Telegram as the second channel.</li></ul><h2>Action items</h2><ul><li>Dmytro Shevchuk: fix telephony latency and share benchmark (due 2026-10-24)</li><li>Olena Bondar: write regression test cases for CRM webhooks (due 2026-10-23)</li><li>Anna Koval: confirm Telegram bot naming and greeting text (due 2026-10-22)</li><li>Oleksii Yevchenko: schedule go/no-go call with client stakeholders (due 2026-10-28)</li></ul>",
+            "representation": "storage"
+          }
+        }
+      }
+    }
+  ],
+  "jira": [
+    {
+      "method": "POST",
+      "url": "/rest/api/3/issue",
+      "body": {
+        "fields": {
+          "project": {
+            "key": "OPS"
+          },
+          "issuetype": {
+            "name": "Task"
+          },
+          "summary": "fix telephony latency and share benchmark",
+          "assignee": {
+            "emailAddress": "dmytro@team.example"
+          },
+          "duedate": "2026-10-24"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/rest/api/3/issue",
+      "body": {
+        "fields": {
+          "project": {
+            "key": "OPS"
+          },
+          "issuetype": {
+            "name": "Task"
+          },
+          "summary": "write regression test cases for CRM webhooks",
+          "assignee": {
+            "emailAddress": "olena@team.example"
+          },
+          "duedate": "2026-10-23"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/rest/api/3/issue",
+      "body": {
+        "fields": {
+          "project": {
+            "key": "OPS"
+          },
+          "issuetype": {
+            "name": "Task"
+          },
+          "summary": "confirm Telegram bot naming and greeting text",
+          "assignee": {
+            "emailAddress": "anna@client.example"
+          },
+          "duedate": "2026-10-22"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/rest/api/3/issue",
+      "body": {
+        "fields": {
+          "project": {
+            "key": "OPS"
+          },
+          "issuetype": {
+            "name": "Task"
+          },
+          "summary": "schedule go/no-go call with client stakeholders",
+          "assignee": {
+            "emailAddress": "oleksii.yevchenko@gmail.com"
+          },
+          "duedate": "2026-10-28"
+        }
+      }
+    }
+  ],
+  "calendar": [
+    {
+      "method": "POST",
+      "url": "/calendar/v3/calendars/primary/events",
+      "body": {
+        "summary": "Follow-up: fix telephony latency and share benchmark",
+        "start": {
+          "date": "2026-10-24"
+        },
+        "end": {
+          "date": "2026-10-24"
+        },
+        "attendees": [
+          {
+            "email": "dmytro@team.example"
+          },
+          {
+            "email": "oleksii.yevchenko@gmail.com"
+          }
+        ],
+        "reminders": {
+          "useDefault": false,
+          "overrides": [
+            {
+              "method": "popup",
+              "minutes": 1440
+            },
+            {
+              "method": "email",
+              "minutes": 60
+            }
+          ]
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/calendar/v3/calendars/primary/events",
+      "body": {
+        "summary": "Follow-up: write regression test cases for CRM webhooks",
+        "start": {
+          "date": "2026-10-23"
+        },
+        "end": {
+          "date": "2026-10-23"
+        },
+        "attendees": [
+          {
+            "email": "olena@team.example"
+          },
+          {
+            "email": "oleksii.yevchenko@gmail.com"
+          }
+        ],
+        "reminders": {
+          "useDefault": false,
+          "overrides": [
+            {
+              "method": "popup",
+              "minutes": 1440
+            },
+            {
+              "method": "email",
+              "minutes": 60
+            }
+          ]
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/calendar/v3/calendars/primary/events",
+      "body": {
+        "summary": "Follow-up: confirm Telegram bot naming and greeting text",
+        "start": {
+          "date": "2026-10-22"
+        },
+        "end": {
+          "date": "2026-10-22"
+        },
+        "attendees": [
+          {
+            "email": "anna@client.example"
+          },
+          {
+            "email": "oleksii.yevchenko@gmail.com"
+          }
+        ],
+        "reminders": {
+          "useDefault": false,
+          "overrides": [
+            {
+              "method": "popup",
+              "minutes": 1440
+            },
+            {
+              "method": "email",
+              "minutes": 60
+            }
+          ]
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/calendar/v3/calendars/primary/events",
+      "body": {
+        "summary": "Follow-up: schedule go/no-go call with client stakeholders",
+        "start": {
+          "date": "2026-10-28"
+        },
+        "end": {
+          "date": "2026-10-28"
+        },
+        "attendees": [
+          {
+            "email": "oleksii.yevchenko@gmail.com"
+          },
+          {
+            "email": "oleksii.yevchenko@gmail.com"
+          }
+        ],
+        "reminders": {
+          "useDefault": false,
+          "overrides": [
+            {
+              "method": "popup",
+              "minutes": 1440
+            },
+            {
+              "method": "email",
+              "minutes": 60
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "gmail": [
+    {
+      "method": "POST",
+      "url": "/gmail/v1/users/me/drafts",
+      "body": {
+        "message": {
+          "to": "dmytro@team.example",
+          "subject": "Action item: fix telephony latency and share benchmark (due 2026-10-24)",
+          "body": "Hi Dmytro,\n\nFrom today's 'Weekly Delivery Sync — Voice Agent Rollout': fix telephony latency and share benchmark.\nDue: 2026-10-24. Jira: OPS-201.\nI booked a short follow-up on the due date.\n\nThanks,\nOleksii"
+        },
+        "status": "DRAFT"
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/gmail/v1/users/me/drafts",
+      "body": {
+        "message": {
+          "to": "olena@team.example",
+          "subject": "Action item: write regression test cases for CRM webhooks (due 2026-10-23)",
+          "body": "Hi Olena,\n\nFrom today's 'Weekly Delivery Sync — Voice Agent Rollout': write regression test cases for CRM webhooks.\nDue: 2026-10-23. Jira: OPS-202.\nI booked a short follow-up on the due date.\n\nThanks,\nOleksii"
+        },
+        "status": "DRAFT"
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/gmail/v1/users/me/drafts",
+      "body": {
+        "message": {
+          "to": "anna@client.example",
+          "subject": "Action item: confirm Telegram bot naming and greeting text (due 2026-10-22)",
+          "body": "Hi Anna,\n\nFrom today's 'Weekly Delivery Sync — Voice Agent Rollout': confirm Telegram bot naming and greeting text.\nDue: 2026-10-22. Jira: OPS-203.\nI booked a short follow-up on the due date.\n\nThanks,\nOleksii"
+        },
+        "status": "DRAFT"
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/gmail/v1/users/me/drafts",
+      "body": {
+        "message": {
+          "to": "oleksii.yevchenko@gmail.com",
+          "subject": "Action item: schedule go/no-go call with client stakeholders (due 2026-10-28)",
+          "body": "Hi Oleksii,\n\nFrom today's 'Weekly Delivery Sync — Voice Agent Rollout': schedule go/no-go call with client stakeholders.\nDue: 2026-10-28. Jira: OPS-204.\nI booked a short follow-up on the due date.\n\nThanks,\nOleksii"
+        },
+        "status": "DRAFT"
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/gmail/v1/users/me/drafts",
+      "body": {
+        "message": {
+          "to": "oleksii.yevchenko@gmail.com, anna@client.example, dmytro@team.example, olena@team.example",
+          "subject": "[Closed] Weekly Delivery Sync — Voice Agent Rollout — all 4 action items done",
+          "body": "Hi all,\n\nAll action items from \"Weekly Delivery Sync — Voice Agent Rollout\" (2026-10-21) are complete as of 2026-10-27.\n\n- fix telephony latency and share benchmark — Dmytro Shevchuk, due 2026-10-24, done 2026-10-24\n- write regression test cases for CRM webhooks — Olena Bondar, due 2026-10-23, done 2026-10-23\n- confirm Telegram bot naming and greeting text — Anna Koval, due 2026-10-22, done 2026-10-25 (slipped)\n- schedule go/no-go call with client stakeholders — Oleksii Yevchenko, due 2026-10-28, done 2026-10-27\n\nSlips: 1 — confirm Telegram bot naming and greeting text.\n\nThanks everyone,\nOleksii"
+        },
+        "status": "DRAFT"
+      }
+    }
+  ],
+  "notify": [
+    {
+      "method": "POST",
+      "url": "/api/chat.scheduleMessage",
+      "body": {
+        "channel": "slack",
+        "to": "dmytro@team.example",
+        "post_at": "2026-10-23",
+        "text": "Reminder: 'fix telephony latency and share benchmark' is due tomorrow (2026-10-24)."
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/api/chat.scheduleMessage",
+      "body": {
+        "channel": "slack",
+        "to": "dmytro@team.example,oleksii.yevchenko@gmail.com",
+        "post_at": "2026-10-24",
+        "text": "Due today: 'fix telephony latency and share benchmark'. Reply 'done' or share blockers."
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/api/chat.scheduleMessage",
+      "body": {
+        "channel": "slack",
+        "to": "olena@team.example,oleksii.yevchenko@gmail.com",
+        "post_at": "2026-10-23",
+        "text": "Due today: 'write regression test cases for CRM webhooks'. Reply 'done' or share blockers."
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/api/chat.scheduleMessage",
+      "body": {
+        "channel": "slack",
+        "to": "oleksii.yevchenko@gmail.com,anna@client.example",
+        "post_at": "2026-10-23",
+        "text": "⚠️ OVERDUE since 2026-10-22: 'confirm Telegram bot naming and greeting text' (Anna Koval). Please give a new ETA today."
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/api/chat.scheduleMessage",
+      "body": {
+        "channel": "slack",
+        "to": "oleksii.yevchenko@gmail.com",
+        "post_at": "2026-10-27",
+        "text": "Reminder: 'schedule go/no-go call with client stakeholders' is due tomorrow (2026-10-28)."
+      }
+    },
+    {
+      "method": "POST",
+      "url": "/api/chat.scheduleMessage",
+      "body": {
+        "channel": "slack",
+        "to": "oleksii.yevchenko@gmail.com",
+        "post_at": "2026-10-28",
+        "text": "Due today: 'schedule go/no-go call with client stakeholders'. Reply 'done' or share blockers."
+      }
+    }
+  ]
+}

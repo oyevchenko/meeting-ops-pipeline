@@ -1,0 +1,13 @@
+{
+  "subject": "[Closed] Weekly Delivery Sync — Voice Agent Rollout — all 4 action items done",
+  "body": "Hi all,\n\nAll action items from \"Weekly Delivery Sync — Voice Agent Rollout\" (2026-10-21) are complete as of 2026-10-27.\n\n- fix telephony latency and share benchmark — Dmytro Shevchuk, due 2026-10-24, done 2026-10-24\n- write regression test cases for CRM webhooks — Olena Bondar, due 2026-10-23, done 2026-10-23\n- confirm Telegram bot naming and greeting text — Anna Koval, due 2026-10-22, done 2026-10-25 (slipped)\n- schedule go/no-go call with client stakeholders — Oleksii Yevchenko, due 2026-10-28, done 2026-10-27\n\nSlips: 1 — confirm Telegram bot naming and greeting text.\n\nThanks everyone,\nOleksii",
+  "slips": 1,
+  "to": [
+    "oleksii.yevchenko@gmail.com",
+    "anna@client.example",
+    "dmytro@team.example",
+    "olena@team.example"
+  ],
+  "gmail_draft": "5",
+  "sent": false
+}

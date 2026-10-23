@@ -1,0 +1,37 @@
+🧾 Weekly Delivery Sync — Voice Agent Rollout  (dry-run=True)
+   TL;DR: Team reviewed the voice-agent rollout for the client contact center. CRM webhook integration is done in staging; telephony routing still has latency issues.
+   Confluence page id=1 → POST /wiki/rest/api/content
+
+ • fix telephony latency and share benchmark
+   owner=Dmytro Shevchuk due=2026-10-24 jira=OPS-201 cal_event=1 gmail_draft=1
+   ⏰ T-1        2026-10-23 via slack → dmytro@team.example
+   ⏰ due-today  2026-10-24 via slack → dmytro@team.example, oleksii.yevchenko@gmail.com
+
+ • write regression test cases for CRM webhooks
+   owner=Olena Bondar due=2026-10-23 jira=OPS-202 cal_event=2 gmail_draft=2
+   ⏰ due-today  2026-10-23 via slack → olena@team.example, oleksii.yevchenko@gmail.com
+
+ • confirm Telegram bot naming and greeting text
+   owner=Anna Koval due=2026-10-22 jira=OPS-203 cal_event=3 gmail_draft=3
+   ⏰ escalation 2026-10-23 via slack → oleksii.yevchenko@gmail.com, anna@client.example
+
+ • schedule go/no-go call with client stakeholders
+   owner=Oleksii Yevchenko due=2026-10-28 jira=OPS-204 cal_event=4 gmail_draft=4
+   ⏰ T-1        2026-10-27 via slack → oleksii.yevchenko@gmail.com
+   ⏰ due-today  2026-10-28 via slack → oleksii.yevchenko@gmail.com
+
+📬 Closing report (Gmail DRAFT, not sent) → oleksii.yevchenko@gmail.com, anna@client.example, dmytro@team.example, olena@team.example
+   Subject: [Closed] Weekly Delivery Sync — Voice Agent Rollout — all 4 action items done
+   Hi all,
+   
+   All action items from "Weekly Delivery Sync — Voice Agent Rollout" (2026-10-21) are complete as of 2026-10-27.
+   
+   - fix telephony latency and share benchmark — Dmytro Shevchuk, due 2026-10-24, done 2026-10-24
+   - write regression test cases for CRM webhooks — Olena Bondar, due 2026-10-23, done 2026-10-23
+   - confirm Telegram bot naming and greeting text — Anna Koval, due 2026-10-22, done 2026-10-25 (slipped)
+   - schedule go/no-go call with client stakeholders — Oleksii Yevchenko, due 2026-10-28, done 2026-10-27
+   
+   Slips: 1 — confirm Telegram bot naming and greeting text.
+   
+   Thanks everyone,
+   Oleksii

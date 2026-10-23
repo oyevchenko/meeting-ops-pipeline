@@ -1,0 +1,6 @@
+{"source":"notion-ai-meeting-notes","title":"Weekly Delivery Sync — Voice Agent Rollout","date":"2026-10-21","attendees":[
+ {"name":"Oleksii Yevchenko","email":"oleksii.yevchenko@gmail.com","role":"Delivery Manager"},
+ {"name":"Anna Koval","email":"anna@client.example","role":"Client PO"},
+ {"name":"Dmytro Shevchuk","email":"dmytro@team.example","role":"Integration Engineer"},
+ {"name":"Olena Bondar","email":"olena@team.example","role":"QA Lead"}],
+"notes_markdown":"## Summary\nTeam reviewed the voice-agent rollout for the client contact center. CRM webhook integration is done in staging; telephony routing still has latency issues.\n\n## Decisions\n- Go-live moves to Nov 4 if latency < 800ms.\n- Client approves Telegram as the second channel.\n\n## Action items\n- [ ] @Dmytro Shevchuk: fix telephony latency and share benchmark — due 2026-10-24\n- [ ] @Olena Bondar: write regression test cases for CRM webhooks — due 2026-10-23\n- [ ] @Anna Koval: confirm Telegram bot naming and greeting text — due 2026-10-22\n- [ ] @Oleksii Yevchenko: schedule go/no-go call with client stakeholders — due 2026-10-28\n"}
