@@ -1,13 +1,17 @@
-"""Pluggable LLM: OpenAI-compatible API when LLM_MODE=real and a key exists; deterministic mock otherwise."""
+"""Pluggable LLM: real OpenAI-compatible API by default when OPENAI_API_KEY or GEMINI_API_KEY is set
+(Gemini via its OpenAI-compatible endpoint); deterministic mock when LLM_MODE=mock or no key."""
 import json, os, re
 
 def _client():
-    if os.getenv("LLM_MODE") != "real": return None
+    if os.getenv("LLM_MODE") == "mock": return None
     key = os.getenv("OPENAI_API_KEY") or os.getenv("GEMINI_API_KEY")
     if not key: return None
     from openai import OpenAI
     base = os.getenv("OPENAI_BASE_URL") or (None if os.getenv("OPENAI_API_KEY") else "https://generativelanguage.googleapis.com/v1beta/openai/")
-    return OpenAI(api_key=key, base_url=base), os.getenv("LLM_MODEL", "gpt-4o-mini")
+    default = "gpt-4o-mini" if os.getenv("OPENAI_API_KEY") else "gemini-3-flash-preview"
+    return OpenAI(api_key=key, base_url=base, timeout=60), os.getenv("LLM_MODEL", default)
+
+LAST_BACKEND = {"value": "mock"}
 
 def _ask(prompt, fallback):
     c = _client()
@@ -15,8 +19,12 @@ def _ask(prompt, fallback):
         try:
             r = c[0].chat.completions.create(model=c[1], temperature=0, response_format={"type": "json_object"},
                                              messages=[{"role": "user", "content": prompt}])
+            LAST_BACKEND["value"] = c[1]
             return json.loads(r.choices[0].message.content), "llm"
-        except Exception: pass
+        except Exception as e:
+            LAST_BACKEND["value"] = f"mock (fallback: {type(e).__name__})"
+            return fallback(), "mock"
+    LAST_BACKEND["value"] = "mock"
     return fallback(), "mock"
 
 AI_RE = re.compile(r"- \[( |x)\] @([^:]+):\s*(.+?)\s+—\s+due\s+(\d{4}-\d{2}-\d{2})")

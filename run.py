@@ -5,7 +5,8 @@ from mop.pipeline import Pipeline
 m = json.loads(pathlib.Path("samples/notion_ai_export.json").read_text())
 p = Pipeline(today=date(2026, 10, 23))
 r = p.run(m)
-print(f"🧾 {m['title']}  (dry-run={r['dry_run']})\n   TL;DR: {r['summary']['tldr']}\n   Confluence page id={r['confluence_page']} → POST /wiki/rest/api/content")
+from mop.llm import LAST_BACKEND
+print(f"🧾 {m['title']}  (dry-run={r['dry_run']}, LLM={LAST_BACKEND['value']})\n   TL;DR: {r['summary']['tldr']}\n   Confluence page id={r['confluence_page']} → POST /wiki/rest/api/content")
 for i in r["items"]:
     print(f"\n • {i['title']}\n   owner={i['owner']} due={i['due']} jira={i['jira']} cal_event={i['calendar_event']} gmail_draft={i['draft']}")
     for x in i["reminders"]: print(f"   ⏰ {x['kind']:<10} {x['at']} via {x['channel']} → {', '.join(x['to'])}")

@@ -25,7 +25,7 @@ flowchart LR
 python -m venv .venv && . .venv/bin/activate && pip install pytest openai
 python run.py            # dry-run demo, writes out/*.json
 python -m pytest -q      # 10 tests
-LLM_MODE=real OPENAI_API_KEY=... python run.py   # real LLM (OpenAI-compatible); mock otherwise
+LLM_MODE=mock python run.py   # offline; real LLM is the default when OPENAI_API_KEY or GEMINI_API_KEY is set
 ```
 Options: `Pipeline(today, dry_run=True, stakeholders="attendees"|"responsible", channel="slack"|"telegram"|"email")`.
 
