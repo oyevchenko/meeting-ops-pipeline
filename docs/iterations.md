@@ -37,3 +37,8 @@ Debug/adjust iterations against the real LLM (Gemini via its OpenAI-compatible e
 - **Fix:** Notes wrapped in <meeting_notes> with an untrusted-data guard in every prompt; instruction-like lines detected (suspicious_lines). Items mentioning an address outside the attendees' domains, or coming from instruction-like text, are held: no Jira/calendar/reminders, just a 'Review held action item' draft to Oleksii. Live rerun: real SLA item kept, real summary, injected item not extracted.
 - **Test:** test_injected_item_with_external_address_is_held_not_actioned, test_notes_are_wrapped_as_untrusted, live: test_live_prompt_injection_in_notes_is_not_followed
 
+## 8. Escape Confluence storage-format HTML
+- **Observed:** Same injection sample: the Confluence page body was built by f-string, so the meeting title '<script>alert(1)</script> & pricing' went in raw. Notes text like '<4h' and 'A & B' would also make the XHTML storage format invalid, and the Confluence API rejects that with 400.
+- **Fix:** All user/LLM text is html.escape()d before it goes into the storage body; missing owner/due are rendered as 'unassigned'/'TBD'.
+- **Test:** test_confluence_storage_body_is_escaped_and_well_formed (asserts escaping and that the body parses as XML)
+

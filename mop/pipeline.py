@@ -1,5 +1,5 @@
 """Notion AI notes -> summary -> Confluence -> action items -> calls, emails, tasks, reminders -> closing report."""
-import hashlib, json, pathlib, re
+import hashlib, html, json, pathlib, re
 from datetime import date, timedelta
 from . import llm
 from .owners import resolve_owner
@@ -56,9 +56,10 @@ class Pipeline:
             ext = [d for d in re.findall(r"[\w.+-]+@([\w.-]+)", i["title"]) if d not in allowed]
             in_sus = any(i["title"][:25].lower() in l.lower() for l in sus)
             i["hold"] = (["external address: " + ", ".join(ext)] if ext else []) + (["from instruction-like text"] if in_sus else [])
-        html = f"<h1>{meeting['title']}</h1><p>{s['tldr']}</p><h2>Decisions</h2><ul>" + "".join(f"<li>{d}</li>" for d in s["decisions"]) + \
-               "</ul><h2>Action items</h2><ul>" + "".join(f"<li>{i['owner']}: {i['title']} (due {i['due']})</li>" for i in items) + "</ul>"
-        page = self.confluence.create_page("DEL", f"{meeting['date']} {meeting['title']}", html)
+        e = html.escape  # Confluence storage format is XHTML: titles/notes like '<4h', 'A & B' or '<script>' must be escaped
+        body = f"<h1>{e(meeting['title'])}</h1><p>{e(s['tldr'])}</p><h2>Decisions</h2><ul>" + "".join(f"<li>{e(d)}</li>" for d in s["decisions"]) + \
+               "</ul><h2>Action items</h2><ul>" + "".join(f"<li>{e(i['owner'] or 'unassigned')}: {e(i['title'])} (due {e(i['due'] or 'TBD')})</li>" for i in items) + "</ul>"
+        page = self.confluence.create_page("DEL", f"{meeting['date']} {meeting['title']}", body)
         results = []
         for i in items:
             if i.get("hold"):
