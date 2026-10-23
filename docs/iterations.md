@@ -52,3 +52,8 @@ Debug/adjust iterations against the real LLM (Gemini via its OpenAI-compatible e
 - **Fix:** mop/inputs.py: pydantic Meeting/Attendee model; accepts YYYY-MM-DD, DD.MM.YYYY, DD/MM/YYYY and ISO timestamps; attendees optional; raises InputError with field-level messages (also for invalid JSON) before any LLM call or API side effect.
 - **Test:** test_bad_exports_fail_fast_with_readable_errors_and_no_side_effects, test_dotted_date_and_missing_attendees_are_normalised
 
+## 11. Business-day reminders (no weekend pings)
+- **Observed:** Reminder plan for the messy UA/EN meeting: two items due Monday 2026-10-26 got their T-1 reminder on Sunday 2026-10-25.
+- **Fix:** prev_business_day(): the T-1 reminder moves to the previous working day (Friday for a Monday deadline) and its text says 'due on Monday' rather than 'tomorrow'.
+- **Test:** test_monday_deadline_is_reminded_on_previous_friday_not_sunday
+

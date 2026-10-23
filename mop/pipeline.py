@@ -8,6 +8,11 @@ from .clients import Confluence, Calendar, Gmail, Jira, Notifier
 
 OWNER = "oleksii.yevchenko@gmail.com"
 
+def prev_business_day(d):
+    d -= timedelta(days=1)
+    while d.weekday() >= 5: d -= timedelta(days=1)
+    return d
+
 def plan_reminders(item, email, today, channel="slack"):
     """1 day before + on due date to the assignee (cc owner); escalation to owner if overdue and not done."""
     out = []
@@ -17,9 +22,11 @@ def plan_reminders(item, email, today, channel="slack"):
         out.append({"kind": "escalation", "at": today.isoformat(), "to": [OWNER, email], "channel": channel,
                     "text": f"⚠️ OVERDUE since {item['due']}: '{item['title']}' ({item['owner']}). Please give a new ETA today."})
     else:
-        if due - timedelta(days=1) >= today:
-            out.append({"kind": "T-1", "at": (due - timedelta(days=1)).isoformat(), "to": [email], "channel": channel,
-                        "text": f"Reminder: '{item['title']}' is due tomorrow ({item['due']})."})
+        pre = prev_business_day(due)  # no Saturday/Sunday pings: a Monday deadline is reminded on Friday
+        if pre >= today:
+            when = "tomorrow" if (due - pre).days == 1 else f"on {due.strftime('%A')}"
+            out.append({"kind": "T-1", "at": pre.isoformat(), "to": [email], "channel": channel,
+                        "text": f"Reminder: '{item['title']}' is due {when} ({item['due']})."})
         out.append({"kind": "due-today", "at": item["due"], "to": list(dict.fromkeys([email, OWNER])), "channel": channel,
                     "text": f"Due today: '{item['title']}'. Reply 'done' or share blockers."})
     return out

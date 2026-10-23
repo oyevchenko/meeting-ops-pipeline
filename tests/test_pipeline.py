@@ -176,3 +176,7 @@ def test_dotted_date_and_missing_attendees_are_normalised():
     from mop.inputs import load_meeting
     m = load_meeting({"title": "x", "date": "23.10.2026", "notes_markdown": "hi"})
     assert m["date"] == "2026-10-23" and m["attendees"] == []
+
+def test_monday_deadline_is_reminded_on_previous_friday_not_sunday():
+    rem = plan_reminders({"title": "x", "owner": "O", "due": "2026-10-26"}, "o@x", T)  # T = Friday 2026-10-23
+    assert rem[0]["kind"] == "T-1" and rem[0]["at"] == "2026-10-23" and "on Monday" in rem[0]["text"]
