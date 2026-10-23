@@ -1,4 +1,5 @@
 """Notion AI notes -> summary -> Confluence -> action items -> calls, emails, tasks, reminders -> closing report."""
+import hashlib, json, pathlib
 from datetime import date, timedelta
 from . import llm
 from .owners import resolve_owner
@@ -23,11 +24,30 @@ def plan_reminders(item, email, today, channel="slack"):
     return out
 
 class Pipeline:
-    def __init__(self, today: date, dry_run=True, stakeholders="attendees", channel="slack"):
+    def __init__(self, today: date, dry_run=True, stakeholders="attendees", channel="slack", state_path=None):
         self.today, self.dry_run, self.stakeholders, self.channel = today, dry_run, stakeholders, channel
+        self.state_path = pathlib.Path(state_path) if state_path else None
+        self.state = json.loads(self.state_path.read_text()) if self.state_path and self.state_path.exists() else {}
         self.confluence, self.calendar, self.gmail, self.jira, self.notify = Confluence(), Calendar(), Gmail(), Jira(), Notifier()
 
+    def _save(self):
+        if self.state_path: self.state_path.write_text(json.dumps(self.state, indent=2, ensure_ascii=False))
+
+    @staticmethod
+    def meeting_key(meeting):
+        return hashlib.sha256(f"{meeting['title']}|{meeting['date']}|{meeting['notes_markdown']}".encode()).hexdigest()[:16]
+
     def run(self, meeting):
+        """Idempotent: re-ingesting the same Notion export (sync retries, manual re-run) returns the stored result
+        instead of creating a second Confluence page, Jira issues, drafts and reminders."""
+        key = self.meeting_key(meeting)
+        if key in self.state:
+            return {**self.state[key], "duplicate": True}
+        res = self._run(meeting)
+        self.state[key] = res; self._save()
+        return res
+
+    def _run(self, meeting):
         emails = {a["name"]: a["email"] for a in meeting["attendees"]}
         s = llm.summarize(meeting); items = llm.extract_action_items(meeting)
         html = f"<h1>{meeting['title']}</h1><p>{s['tldr']}</p><h2>Decisions</h2><ul>" + "".join(f"<li>{d}</li>" for d in s["decisions"]) + \

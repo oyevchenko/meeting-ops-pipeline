@@ -3,7 +3,7 @@ import json, pathlib, sys
 from datetime import date
 from mop.pipeline import Pipeline
 m = json.loads(pathlib.Path("samples/notion_ai_export.json").read_text())
-p = Pipeline(today=date(2026, 10, 23))
+p = Pipeline(today=date(2026, 10, 23))  # pass state_path="out/state.json" for idempotent re-runs
 r = p.run(m)
 from mop.llm import backends, TRACE
 print(f"🧾 {m['title']}  (dry-run={r['dry_run']}, LLM={backends()})\n   TL;DR: {r['summary']['tldr']}\n   Confluence page id={r['confluence_page']} → POST /wiki/rest/api/content")

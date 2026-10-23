@@ -113,3 +113,15 @@ def test_pipeline_routes_ambiguous_owner_to_oleksii_with_clarification(monkeypat
     assert r["items"][0]["email"] == "oleksii.yevchenko@gmail.com" and r["items"][0]["needs"][0].startswith("owner (ambiguous")
     assert r["items"][1]["email"] == "mark@client.example" and r["items"][1]["owner"] == "Mark Fischer"
     assert any(c["body"]["message"]["subject"].startswith("Clarify owner") for c in p.gmail.calls)
+
+def test_reingesting_same_notes_is_idempotent_across_restarts(tmp_path):
+    st = tmp_path / "state.json"
+    p1 = Pipeline(T, state_path=st); first = p1.run(M)
+    p2 = Pipeline(T, state_path=st); again = p2.run(M)  # new process, same export
+    assert again["duplicate"] is True and again["items"][0]["jira"] == first["items"][0]["jira"]
+    assert p2.confluence.calls == [] and p2.jira.calls == [] and p2.notify.calls == []
+
+def test_edited_notes_are_processed_again():
+    p = Pipeline(T); p.run(M)
+    r = p.run({**M, "notes_markdown": M["notes_markdown"] + "\n- [ ] @Olena Bondar: smoke test — due 2026-10-29\n"})
+    assert "duplicate" not in r

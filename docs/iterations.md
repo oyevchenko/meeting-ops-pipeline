@@ -27,3 +27,8 @@ Debug/adjust iterations against the real LLM (Gemini via its OpenAI-compatible e
 - **Fix:** mop/owners.py resolve_owner(): exact name, then first name with UA/EN aliases (Діма→Dmytro, Олена→Olena...). Ambiguous or unknown owners are routed to Oleksii with needs=['owner (...)'] and a 'Clarify owner' draft. The mock summarizer now tolerates missing sections. Rerun: Olena/Mark/Oleksii resolved, Діма flagged ambiguous, unassigned item flagged.
 - **Test:** test_owner_aliases_and_first_names_resolve_to_attendees, test_ambiguous_and_missing_owner_are_flagged, test_pipeline_routes_ambiguous_owner_to_oleksii_with_clarification
 
+## 6. Idempotent ingestion of the same meeting export
+- **Observed:** Running the pipeline twice on the same Notion export (what happens on a sync retry or a manual re-run) produced 2 Confluence pages, 8 Jira issues, 8 Gmail drafts and 12 scheduled reminders instead of 1/4/4/6.
+- **Fix:** Pipeline.run() keys a meeting by sha256(title|date|notes) and returns the stored result with duplicate=true; the optional state_path persists it across restarts. Edited notes give a new key and are processed again.
+- **Test:** test_reingesting_same_notes_is_idempotent_across_restarts, test_edited_notes_are_processed_again
+
