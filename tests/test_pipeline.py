@@ -180,3 +180,19 @@ def test_dotted_date_and_missing_attendees_are_normalised():
 def test_monday_deadline_is_reminded_on_previous_friday_not_sunday():
     rem = plan_reminders({"title": "x", "owner": "O", "due": "2026-10-26"}, "o@x", T)  # T = Friday 2026-10-23
     assert rem[0]["kind"] == "T-1" and rem[0]["at"] == "2026-10-23" and "on Monday" in rem[0]["text"]
+
+MESSY = json.loads((pathlib.Path(__file__).parent.parent / "samples/edge/messy_ua_mixed.json").read_text())
+def test_ukrainian_item_gets_ukrainian_email_and_english_item_english(monkeypatch):
+    monkeypatch.setattr(llm, "extract_action_items", lambda _: [
+        {"owner": "Олена", "title": "написати тест-кейси для edge cases", "due": "2026-10-26", "done": False},
+        {"owner": "Mark", "title": "send API credentials for staging", "due": "2026-10-26", "done": False}])
+    p = Pipeline(T); p.run(MESSY)
+    ua, en = [c["body"]["message"] for c in p.gmail.calls]
+    assert ua["subject"].startswith("Задача:") and ua["body"].startswith("Привіт, Olena!")
+    assert en["subject"].startswith("Action item:") and en["to"] == "mark@client.example"
+
+def test_ambiguous_owner_gets_no_misaddressed_owner_email(monkeypatch):
+    monkeypatch.setattr(llm, "extract_action_items", lambda _: [{"owner": "Діма", "title": "зробити мапінг полів", "due": "2026-10-30", "done": False}])
+    p = Pipeline(T); p.run(MESSY)
+    subjects = [c["body"]["message"]["subject"] for c in p.gmail.calls]
+    assert subjects == ["Clarify owner: зробити мапінг полів"]

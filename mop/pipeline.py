@@ -31,6 +31,19 @@ def plan_reminders(item, email, today, channel="slack"):
                     "text": f"Due today: '{item['title']}'. Reply 'done' or share blockers."})
     return out
 
+def is_ukrainian(t):
+    return len(re.findall(r"[а-яіїєґ]", t.lower())) > len(re.findall(r"[a-z]", t.lower()))
+
+def owner_email(i, who, meeting, jira_key):
+    first = who["name"].split()[0]
+    if is_ukrainian(i["title"]):
+        return (f"Задача: {i['title']} (до {i['due']})",
+                f"Привіт, {first}!\n\nЗа результатами зустрічі «{meeting['title']}»: {i['title']}.\nДедлайн: {i['due']}. Jira: {jira_key}.\n"
+                f"Я поставив коротку зустріч на день дедлайну.\n\nДякую,\nОлексій")
+    return (f"Action item: {i['title']} (due {i['due']})",
+            f"Hi {first},\n\nFrom '{meeting['title']}': {i['title']}.\nDue: {i['due']}. Jira: {jira_key}.\n"
+            f"I booked a short follow-up on the due date.\n\nThanks,\nOleksii")
+
 class Pipeline:
     def __init__(self, today: date, dry_run=True, stakeholders="attendees", channel="slack", state_path=None):
         self.today, self.dry_run, self.stakeholders, self.channel = today, dry_run, stakeholders, channel
@@ -87,9 +100,10 @@ class Pipeline:
             issue = self.jira.create_issue(i["title"], em, i["due"])
             call = self.calendar.create_event(f"Follow-up: {i['title']}", i["due"], [em, OWNER],
                                               reminders=[{"method": "popup", "minutes": 1440}, {"method": "email", "minutes": 60}])
-            mail = self.gmail.create_draft(em, f"Action item: {i['title']} (due {i['due']})",
-                f"Hi {i['owner'].split()[0]},\n\nFrom today's '{meeting['title']}': {i['title']}.\nDue: {i['due']}. Jira: {issue['key']}.\n"
-                f"I booked a short follow-up on the due date.\n\nThanks,\nOleksii")
+            mail = {"id": None}
+            if who:  # unresolved owner: only the clarification below goes out, no 'Hi Діма' draft landing in Oleksii's inbox
+                subj, text = owner_email(i, who, meeting, issue["key"])
+                mail = self.gmail.create_draft(em, subj, text)
             rems = [dict(r, scheduled=self.notify.schedule(r["channel"], ",".join(r["to"]), r["at"], r["text"])["id"])
                     for r in plan_reminders(i, em, self.today, self.channel)]
             if problem:

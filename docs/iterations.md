@@ -57,3 +57,8 @@ Debug/adjust iterations against the real LLM (Gemini via its OpenAI-compatible e
 - **Fix:** prev_business_day(): the T-1 reminder moves to the previous working day (Friday for a Monday deadline) and its text says 'due on Monday' rather than 'tomorrow'.
 - **Test:** test_monday_deadline_is_reminded_on_previous_friday_not_sunday
 
+## 12. Owner emails in the item's language; no misaddressed drafts for unresolved owners
+- **Observed:** Gmail drafts for the UA/EN meeting: Ukrainian items went into an English template ('Action item: зробить мапінг полів ... Hi Діма, From today's ...'). For the ambiguous owner 'Діма', a 'Hi Діма' draft was addressed to Oleksii (the triage fallback) on top of the 'Clarify owner' draft.
+- **Fix:** owner_email() picks a Ukrainian or English template from the item title's script (Cyrillic vs Latin) and greets the resolved attendee's first name. Unresolved owners get only the 'Clarify owner' draft to Oleksii.
+- **Test:** test_ukrainian_item_gets_ukrainian_email_and_english_item_english, test_ambiguous_owner_gets_no_misaddressed_owner_email
+
