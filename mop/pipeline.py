@@ -1,5 +1,5 @@
 """Notion AI notes -> summary -> Confluence -> action items -> calls, emails, tasks, reminders -> closing report."""
-import hashlib, json, pathlib
+import hashlib, json, pathlib, re
 from datetime import date, timedelta
 from . import llm
 from .owners import resolve_owner
@@ -50,11 +50,21 @@ class Pipeline:
     def _run(self, meeting):
         emails = {a["name"]: a["email"] for a in meeting["attendees"]}
         s = llm.summarize(meeting); items = llm.extract_action_items(meeting)
+        sus = llm.suspicious_lines(meeting["notes_markdown"])
+        allowed = {a["email"].split("@")[1] for a in meeting["attendees"]}
+        for i in items:  # anything touching an outside address or living in an instruction-like line is held for a human
+            ext = [d for d in re.findall(r"[\w.+-]+@([\w.-]+)", i["title"]) if d not in allowed]
+            in_sus = any(i["title"][:25].lower() in l.lower() for l in sus)
+            i["hold"] = (["external address: " + ", ".join(ext)] if ext else []) + (["from instruction-like text"] if in_sus else [])
         html = f"<h1>{meeting['title']}</h1><p>{s['tldr']}</p><h2>Decisions</h2><ul>" + "".join(f"<li>{d}</li>" for d in s["decisions"]) + \
                "</ul><h2>Action items</h2><ul>" + "".join(f"<li>{i['owner']}: {i['title']} (due {i['due']})</li>" for i in items) + "</ul>"
         page = self.confluence.create_page("DEL", f"{meeting['date']} {meeting['title']}", html)
         results = []
         for i in items:
+            if i.get("hold"):
+                self.gmail.create_draft(OWNER, f"Review held action item: {i['title']}", f"Not actioned automatically ({'; '.join(i['hold'])}). Source meeting: {meeting['title']}.")
+                results.append({**i, "email": OWNER, "jira": None, "calendar_event": None, "draft": None, "reminders": [], "needs": ["human review"]})
+                continue
             who, problem = resolve_owner(i.get("owner"), meeting["attendees"])
             em = who["email"] if who else OWNER  # unresolved owners go to Oleksii for triage, never silently
             if who: i = {**i, "owner": who["name"]}
@@ -75,7 +85,7 @@ class Pipeline:
             if problem:
                 self.gmail.create_draft(OWNER, f"Clarify owner: {i['title']}", f"From '{meeting['title']}': '{i['title']}' — {problem}. Please assign an owner.")
             results.append({**i, "email": em, "jira": issue["key"], "calendar_event": call["id"], "draft": mail["id"], "reminders": rems, "needs": needs})
-        return {"dry_run": self.dry_run, "summary": s, "confluence_page": page["id"], "items": results}
+        return {"dry_run": self.dry_run, "summary": s, "suspicious_lines": sus, "confluence_page": page["id"], "items": results}
 
     def close_if_done(self, meeting, items):
         """items need 'completed_on'. Returns None until every item is done."""
