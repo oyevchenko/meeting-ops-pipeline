@@ -7,3 +7,8 @@ Debug/adjust iterations against the real LLM (Gemini via its OpenAI-compatible e
 - **Fix:** Each step goes through _ask(step, ...): models tried in order (LLM_MODEL then LLM_FALLBACK_MODELS), transient errors retried with backoff, quota 429 not retried; TRACE records per step which model answered, skipped models, tokens and latency; written to out/llm_trace.json and printed by run.py. Rerun: all 3 steps served by gemini-flash-lite-latest, with the skip visible.
 - **Test:** test_trace_records_backend_per_step_and_falls_through_models
 
+## 2. Closing report: grounded facts, required structure, validation with re-ask
+- **Observed:** Real closing email had a generic subject ('Project Closing Report: Task Completion Summary') with no meeting title, no greeting or item list, and invented a claim ('All reminders and escalations for this period have been processed'). The prompt only passed raw items, not the meeting.
+- **Fix:** Prompt now gets the meeting title/date and computed facts (slipped_days) and is told to use only them; subject/body format is specified; _check_report() validates subject + every item present and triggers one re-ask; slip count is computed in code, not taken from the model. Live rerun: '[Closed] Weekly Delivery Sync — Voice Agent Rollout', all 4 items listed, '(slipped 3 days)'.
+- **Test:** test_closing_report_validator_flags_generic_subject_and_missing_items, test_closing_report_slip_count_is_computed_not_llm, live: test_live_closing_report_lists_every_item_and_slip
+

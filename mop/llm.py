@@ -1,6 +1,7 @@
 """Pluggable LLM: real OpenAI-compatible API by default when OPENAI_API_KEY or GEMINI_API_KEY is set
 (Gemini via its OpenAI-compatible endpoint); deterministic mock when LLM_MODE=mock or no key."""
 import json, os, re, time
+from datetime import date
 
 TRACE: list[dict] = []  # one row per pipeline step: which backend actually answered, tokens, latency
 
@@ -25,7 +26,7 @@ def _create(cli, model, prompt, attempts=3, sleep=time.sleep):
             if i == attempts - 1 or "quota" in str(e).lower(): raise
             sleep(2 ** i)
 
-def _ask(step, prompt, fallback):
+def _ask(step, prompt, fallback, validate=None):
     c, t0 = _client(), time.time()
     if c:
         cli, models = c
@@ -34,6 +35,11 @@ def _ask(step, prompt, fallback):
             try:
                 r = _create(cli, model, prompt)
                 out = json.loads(r.choices[0].message.content)
+                if validate and (problems := validate(out)):  # one corrective re-ask on the same model
+                    r = _create(cli, model, prompt + f"\n\nYour previous answer had problems: {problems}. Fix them and return JSON only.")
+                    out = json.loads(r.choices[0].message.content)
+                    if validate(out):
+                        raise ValueError(f"invalid output after re-ask: {validate(out)}")
                 u = r.usage
                 TRACE.append({"step": step, "backend": model, "prompt_tokens": u.prompt_tokens, "completion_tokens": u.completion_tokens,
                               "latency_ms": round((time.time() - t0) * 1000), "errors": errors})
@@ -63,11 +69,27 @@ def extract_action_items(meeting):
     return _ask("extract_action_items", f"Extract action items as JSON {{items:[{{owner,title,due,done}}]}}:\n{meeting['notes_markdown']}", mock)["items"]
 
 def closing_report(meeting, items, today):
+    slips = [i for i in items if i["completed_on"] > i["due"]]  # facts are computed in code, the LLM only writes prose
+    facts = [{"title": i["title"], "owner": i["owner"], "due": i["due"], "completed_on": i["completed_on"],
+              "slipped_days": (date.fromisoformat(i["completed_on"]) - date.fromisoformat(i["due"])).days} for i in items]
     def mock():
-        slips = [i for i in items if i["completed_on"] > i["due"]]
         lines = [f"- {i['title']} — {i['owner']}, due {i['due']}, done {i['completed_on']}" + (" (slipped)" if i in slips else "") for i in items]
         return {"subject": f"[Closed] {meeting['title']} — all {len(items)} action items done",
                 "body": f"Hi all,\n\nAll action items from \"{meeting['title']}\" ({meeting['date']}) are complete as of {today}.\n\n"
                         + "\n".join(lines) + f"\n\nSlips: {len(slips)}" + (" — " + ", ".join(s['title'] for s in slips) if slips else " — none")
-                        + ".\n\nThanks everyone,\nOleksii", "slips": len(slips)}
-    return _ask("closing_report", f"Write a closing report JSON {{subject, body, slips}} for: {json.dumps(items)}", mock)
+                        + ".\n\nThanks everyone,\nOleksii"}
+    prompt = (f"Write a short closing email for the meeting '{meeting['title']}' held {meeting['date']}. All action items are done as of {today}.\n"
+              f"Facts (use ONLY these, do not invent anything else): {json.dumps(facts, ensure_ascii=False)}\n"
+              "Return JSON {subject, body}. subject must start with '[Closed] ' and contain the meeting title. body: greeting 'Hi all,', "
+              "one-sentence outcome, a bullet list with every item as '- <title> — <owner>, due <due>, done <completed_on>' plus ' (slipped N days)' when slipped_days>0, "
+              "a 'Slips:' line, and sign-off 'Thanks everyone,\\nOleksii'.")
+    out = _ask("closing_report", prompt, mock, validate=lambda o: _check_report(o, meeting, items))
+    return {**out, "slips": len(slips)}
+
+def _check_report(o, meeting, items):
+    problems = []
+    if not str(o.get("subject", "")).startswith("[Closed]") or meeting["title"] not in o.get("subject", ""):
+        problems.append("subject must start with '[Closed] ' and include the meeting title")
+    missing = [i["title"] for i in items if i["title"] not in o.get("body", "")]
+    if missing: problems.append(f"body is missing items: {missing}")
+    return problems

@@ -1,7 +1,7 @@
 {
   "dry_run": true,
   "summary": {
-    "tldr": "Reviewed voice-agent rollout: CRM webhooks are in staging, but telephony routing has latency issues.",
+    "tldr": "Reviewed the voice-agent rollout: CRM webhooks are ready in staging, but telephony routing has latency issues.",
     "decisions": [
       "Go-live moves to Nov 4 if latency < 800ms.",
       "Client approves Telegram as the second channel."

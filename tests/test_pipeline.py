@@ -67,3 +67,18 @@ def test_trace_records_backend_per_step_and_falls_through_models(monkeypatch):
     assert llm.summarize(M)["tldr"] == "t"
     assert calls == ["m1", "m2"]  # quota error: no retries on m1, straight to m2
     assert llm.TRACE[-1]["backend"] == "m2" and "m1: RateLimitError" in llm.TRACE[-1]["errors"]
+
+def _items_done():
+    p = Pipeline(T); items = p.run(M)["items"]
+    for i, d in zip(items, ["2026-10-24", "2026-10-23", "2026-10-25", "2026-10-27"]): i["completed_on"] = d
+    return items
+
+def test_closing_report_validator_flags_generic_subject_and_missing_items():
+    items = _items_done()
+    probs = llm._check_report({"subject": "Project Closing Report: Task Completion Summary", "body": "All tasks done."}, M, items)
+    assert len(probs) == 2 and "missing items" in probs[1]
+
+def test_closing_report_slip_count_is_computed_not_llm(monkeypatch):
+    items = _items_done()
+    monkeypatch.setattr(llm, "_ask", lambda *a, **k: {"subject": "[Closed] x", "body": "b", "slips": 0})
+    assert llm.closing_report(M, items, "2026-10-27")["slips"] == 1
