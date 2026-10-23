@@ -1,0 +1,32 @@
+[
+  {
+    "step": "summarize",
+    "backend": "gemini-flash-lite-latest",
+    "prompt_tokens": 206,
+    "completion_tokens": 71,
+    "latency_ms": 1266,
+    "errors": [
+      "gemini-3-flash-preview: RateLimitError"
+    ]
+  },
+  {
+    "step": "extract_action_items",
+    "backend": "gemini-flash-lite-latest",
+    "prompt_tokens": 213,
+    "completion_tokens": 233,
+    "latency_ms": 1050,
+    "errors": [
+      "gemini-3-flash-preview: RateLimitError"
+    ]
+  },
+  {
+    "step": "closing_report",
+    "backend": "gemini-flash-lite-latest",
+    "prompt_tokens": 931,
+    "completion_tokens": 413,
+    "latency_ms": 1563,
+    "errors": [
+      "gemini-3-flash-preview: RateLimitError"
+    ]
+  }
+]

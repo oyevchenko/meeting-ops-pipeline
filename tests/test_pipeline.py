@@ -50,3 +50,20 @@ def test_closing_report_responsible_only_mode():
     p = Pipeline(T, stakeholders="responsible"); items = p.run(M)["items"]
     for i in items: i["completed_on"] = i["due"]
     c = p.close_if_done(M, items); assert c["slips"] == 0 and "oleksii.yevchenko@gmail.com" in c["to"]
+
+def test_trace_records_backend_per_step_and_falls_through_models(monkeypatch):
+    import httpx, openai
+    from types import SimpleNamespace as N
+    calls = []
+    class Cli:
+        chat = property(lambda s: s); completions = property(lambda s: s)
+        def create(self, model, **kw):
+            calls.append(model)
+            if model == "m1":
+                raise openai.RateLimitError("You exceeded your current quota", response=httpx.Response(429, request=httpx.Request("POST", "http://x")), body=None)
+            return N(choices=[N(message=N(content='{"tldr": "t", "decisions": []}'))], usage=N(prompt_tokens=5, completion_tokens=3))
+    monkeypatch.setattr(llm, "_client", lambda: (Cli(), ["m1", "m2"]))
+    llm.TRACE.clear()
+    assert llm.summarize(M)["tldr"] == "t"
+    assert calls == ["m1", "m2"]  # quota error: no retries on m1, straight to m2
+    assert llm.TRACE[-1]["backend"] == "m2" and "m1: RateLimitError" in llm.TRACE[-1]["errors"]
